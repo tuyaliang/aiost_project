@@ -1,0 +1,35 @@
+menuconfig ARCH_MILBEAUT
+	bool "Socionext Milbeaut SoCs" if ARCH_MULTI_V7
+	select ARM_GIC
+	select COMMON_CLK
+	select CLKDEV_LOOKUP
+	select PM_GENERIC_DOMAINS if PM
+	select GENERIC_CLOCKEVENTS
+	select CLKSRC_MMIO
+	select ZONE_DMA
+	select PINCTRL
+	select PINCTRL_MILBEAUT
+	help
+		This enables support for Socionext Milbeaut SoCs
+
+if ARCH_MILBEAUT
+
+config ARCH_M8M
+	bool "Milbeaut MB86S27a/M8M platform"
+	select ARM_GLOBAL_TIMER
+	select CLKSRC_ARM_GLOBAL_TIMER_SCHED_CLOCK
+	select HAVE_ARM_TWD if SMP
+	help
+	  Support for Socionext's M-8M based systems
+
+config ARCH_MLB01
+	bool "Milbeaut SC2000/MLB01 platform"
+	select ARM_ARCH_TIMER
+	help
+	  Support for Socionext's MLB01 based systems
+
+config MACH_MILBEAUT_EVB
+	bool "Support for Milbeaut Evb boards"
+	default y
+
+endif

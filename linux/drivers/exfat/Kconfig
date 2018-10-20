@@ -1,0 +1,6 @@
+config EXFAT
+	tristate "Exfat support"
+	help
+	  This is based on Samsung's GPL2 EXFAT support from here
+	  http://opensource.samsung.com/reception.do 
+

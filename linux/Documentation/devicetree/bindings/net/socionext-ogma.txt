@@ -1,0 +1,43 @@
+* Fujistu OGMA Ethernet Controller IP
+
+Required properties:
+- compatible: Should be "socionext,ogma"
+- reg: Address and length of the register sets, the first is the main
+	registers, then the rdlar and tdlar regions for the SoC
+- interrupts: Should contain ethernet controller interrupt
+- clocks: phandle to any clocks to be switched by runtime_pm
+- phy-mode: See ethernet.txt file in the same directory
+- max-speed: See ethernet.txt file in the same directory
+- max-frame-size: See ethernet.txt file in the same directory, if 9000 or
+	above jumbo frames are enabled
+- local-mac-address: See ethernet.txt file in the same directory
+- phy-handle: phandle to select child phy
+
+For the child phy
+
+- compatible "ethernet-phy-ieee802.3-c22" is needed
+- device_type "ethernet-phy"
+- reg: phy address
+
+
+Example:
+	eth0: f_taiki {
+                compatible = "socionext,ogma";
+		reg = <0 0x31600000 0x10000>, <0 0x31618000 0x4000>, <0 0x3161c000 0x4000>;
+		interrupts = <0 163 0x4>;
+		clocks = <&clk_alw_0_8>;
+		phy-mode = "rgmii";
+		max-speed = <1000>;
+		max-frame-size = <9000>;
+		local-mac-address = [ a4 17 31 00 00 ed ];
+		phy-handle = <&ethphy0>;
+
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		ethphy0: ethernet-phy@1 {
+			device_type = "ethernet-phy";
+			compatible = "ethernet-phy-ieee802.3-c22";
+			reg = <1>;
+		};
+	};

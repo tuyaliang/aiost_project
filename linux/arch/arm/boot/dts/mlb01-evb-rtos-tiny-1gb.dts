@@ -1,0 +1,79 @@
+
+/dts-v1/;
+#include "mlb01-evb-rtos.dtsi"
+
+/ {
+	model = "Socionext SC2000A EVB w/ 1GB RTOS Tiny";
+	chosen {
+		bootargs = "consoleblank=0 loglevel=4 rdinit=/sbin/finit root=/dev/mmcblk0p2 rootwait ro console=ttyUSI0,115200n8 console=/dev/tty1 ";
+		linux,initrd-start = <0x43000000>;
+		linux,initrd-end =   <0x43F00000>;
+	};
+	memory {
+		device_type = "memory";
+		reg = <0x40000000  0x06200000>;	/* 98MB + 1MB hibernation */
+	};
+
+	shared_commem: shared_commem {
+		compatible = "socionext, shared-commem";
+		buf-addr = <GET_IPCU_BUFFER_ADDR_1GB>;
+		buf-size = <GET_IPCU_BUFFER_SIZE_1GB>;
+		sync-addr = <GET_IPCU_SYNC_ADDR_1GB>;
+		sync-size = <GET_IPCU_SYNC_SIZE_1GB>;
+		rd-pointer-addr = <GET_TS_READ_POINTER_ADDR_1GB>;
+		rd-pointer-size = <GET_TS_READ_POINTER_SIZE_1GB>;
+		wt-pointer-addr = <GET_TS_WRITE_POINTER_ADDR_1GB>;
+		wt-pointer-size = <GET_TS_WRITE_POINTER_SIZE_1GB>;
+		movie-rec-addr = <GET_MOVIE_RECORD0_DFS_ADDR_1GB>;
+		movie-rec-size = <GET_MOVIE_RECORD0_DFS_SIZE_1GB>;
+		term-io-addr = <GET_TERMINAL_IO_ADDR_1GB>;
+		term-io-size = <GET_TERMINAL_IO_SIZE_1GB>;
+		string-addr = <GET_STRING_ADDR_1GB>;
+		string-size = <GET_STRING_SIZE_1GB>;
+		ribery-addr = <GET_RIBERY_STREAM_ADDR_1GB>;
+		ribery-size = <GET_RIBERY_STREAM_SIZE_1GB>;
+		audio-addr = <GET_AUDIO_STREAM_ADDR_1GB>;
+		audio-size = <GET_AUDIO_STREAM_SIZE_1GB>;
+		raw-addr = <GET_RAW_STREAM_ADDR_1GB>;
+		raw-size = <GET_RAW_STREAM_SIZE_1GB>;
+		yuv-addr = <GET_YUV_STREAM_ADDR_1GB>;
+		yuv-size = <GET_YUV_STREAM_SIZE_1GB>;
+		hevc-addr = <GET_HEVC_STREAM_ADDR_1GB>;
+		hevc-size = <GET_HEVC_STREAM_SIZE_1GB>;
+		mjpeg-addr = <GET_MJPEG_STREAM_ADDR_1GB>;
+		mjpeg-size = <GET_MJPEG_STREAM_SIZE_1GB>;
+		cap-addr = <GET_CAP_INFO_ADDR_1GB>;
+		cap-size = <GET_CAP_INFO_SIZE_1GB>;
+		osd-addr = <GET_OSD_INFO_ADDR_1GB>;
+		osd-size = <GET_OSD_INFO_SIZE_1GB>;
+		audio-out-addr = <GET_AUDIO_OUT_ADDR_1GB>;
+		audio-out-size = <GET_AUDIO_OUT_SIZE_1GB>;
+		metadata-addr = <GET_METADATA_ADDR_1GB>;
+		metadata-size = <GET_METADATA_SIZE_1GB>;
+	};
+
+/* ipcu unit0 */
+	snrtos_ipcu00: snrtos0@0 {
+		reg = <0x1c251000 0x1000>, <GET_IPCU_SYNC_ADDR_1GB 0x32>; // IPCU sync top addr
+	};
+/* ipcu unit1 */
+	snrtos_ipcu10: snrtos1@0 {
+		reg = <0x1c252000 0x1000>, <GET_IPCU_SYNC_ADDR_1GB 0x32>; // IPCU sync top addr
+	};
+
+	sn_ipcufs_rtos: snipcufs_rtos@0 {
+		reg = <GET_IPCU_BUFFER_ADDR_1GB 0x1000>;  // IPCU buffer top addr
+	};
+
+	sn_vblk_rtos: snvblk_rtos@0 {
+		status = "disable";
+	};
+	fb_common {
+		ipcu_unit = <1>; // IPCU Unit
+		ipcu_ch = <5 4>;  // Send/Recv Channel
+		reg = <GET_DISP_SETTING_ADDR_1GB SHMEM_GR_IPCU_SIZE>; // IPCU buffer top addr
+		reg-names = "ipcu-buffer";
+
+	};
+};
+

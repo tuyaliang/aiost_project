@@ -1,0 +1,84 @@
+
+/dts-v1/;
+#include "mlb01-evb-rtos.dtsi"
+
+/ {
+	model = "Socionext SC2000A EVB w/ RTOS VBD";
+	chosen {
+		bootargs = "consoleblank=0 loglevel=4 init=/sbin/finit root=/dev/nandblk rootwait ro console=ttyUSI0,115200n8 console=/dev/tty1 ";
+		linux,initrd-start = <0x43000000>;
+		linux,initrd-end =   <0x43F00000>;
+	};
+	memory {
+		device_type = "memory";
+		reg = <0x40000000  0x05200000>;	/* 82MB + 1MB hibernation */
+	};
+
+	shared_commem: shared_commem {
+		compatible = "socionext, shared-commem";
+		buf-addr = <GET_IPCU_BUFFER_ADDR_VBD>;
+		buf-size = <GET_IPCU_BUFFER_SIZE_VBD>;
+		sync-addr = <GET_IPCU_SYNC_ADDR_VBD>;
+		sync-size = <GET_IPCU_SYNC_SIZE_VBD>;
+		rd-pointer-addr = <GET_TS_READ_POINTER_ADDR_VBD>;
+		rd-pointer-size = <GET_TS_READ_POINTER_SIZE_VBD>;
+		wt-pointer-addr = <GET_TS_WRITE_POINTER_ADDR_VBD>;
+		wt-pointer-size = <GET_TS_WRITE_POINTER_SIZE_VBD>;
+		movie-rec-addr = <GET_MOVIE_RECORD0_DFS_ADDR_VBD>;
+		movie-rec-size = <GET_MOVIE_RECORD0_DFS_SIZE_VBD>;
+		term-io-addr = <GET_TERMINAL_IO_ADDR_VBD>;
+		term-io-size = <GET_TERMINAL_IO_SIZE_VBD>;
+		string-addr = <GET_STRING_ADDR_VBD>;
+		string-size = <GET_STRING_SIZE_VBD>;
+		ribery-addr = <GET_RIBERY_STREAM_ADDR_VBD>;
+		ribery-size = <GET_RIBERY_STREAM_SIZE_VBD>;
+		audio-addr = <GET_AUDIO_STREAM_ADDR_VBD>;
+		audio-size = <GET_AUDIO_STREAM_SIZE_VBD>;
+		raw-addr = <GET_RAW_STREAM_ADDR_VBD>;
+		raw-size = <GET_RAW_STREAM_SIZE_VBD>;
+		yuv-addr = <GET_YUV_STREAM_ADDR_VBD>;
+		yuv-size = <GET_YUV_STREAM_SIZE_VBD>;
+		hevc-addr = <GET_HEVC_STREAM_ADDR_VBD>;
+		hevc-size = <GET_HEVC_STREAM_SIZE_VBD>;
+		mjpeg-addr = <GET_MJPEG_STREAM_ADDR_VBD>;
+		mjpeg-size = <GET_MJPEG_STREAM_SIZE_VBD>;
+		cap-addr = <GET_CAP_INFO_ADDR_VBD>;
+		cap-size = <GET_CAP_INFO_SIZE_VBD>;
+		osd-addr = <GET_OSD_INFO_ADDR_VBD>;
+		osd-size = <GET_OSD_INFO_SIZE_VBD>;
+		audio-out-addr = <GET_AUDIO_OUT_ADDR_VBD>;
+		audio-out-size = <GET_AUDIO_OUT_SIZE_VBD>;
+		disp-addr = <GET_DISP_SETTING_ADDR_VBD>;
+		metadata-addr = <GET_METADATA_ADDR_VBD>;
+		metadata-size = <GET_METADATA_SIZE_VBD>;
+	};
+
+	trampoline: trampoline@0x454FFF00 {
+		compatible = "socionext,smp-trampoline";
+		reg = <SHMEM_TRAMPOLINE_OFFSET_VBD SHMEM_TRAMPOLINE_SIZE>;
+	};
+/* ipcu unit0 */
+	snrtos_ipcu00: snrtos0@0 {
+		reg = <0x1c251000 0x1000>, <GET_IPCU_SYNC_ADDR_VBD 0x32>; // IPCU sync top addr
+	};
+/* ipcu unit1 */
+	snrtos_ipcu10: snrtos1@0 {
+		reg = <0x1c252000 0x1000>, <GET_IPCU_SYNC_ADDR_VBD 0x32>; // IPCU sync top addr
+	};
+
+	sn_ipcufs_rtos: snipcufs_rtos@0 {
+		reg = <GET_IPCU_BUFFER_ADDR_VBD 0x8000>;  // IPCU buffer top addr
+	};
+
+	sn_vblk_rtos: snvblk_rtos@0 {
+		reg = <GET_IPCU_BUFFER_ADDR_VBD 0x1000>;  // IPCU buffer top addr
+	};
+	fb_common {
+		ipcu_unit = <1>; // IPCU Unit
+		ipcu_ch = <4 5>;  // Send/Recv Channel
+		reg = <GET_DISP_SETTING_ADDR_VBD SHMEM_GR_IPCU_SIZE>; // IPCU buffer top addr
+		reg-names = "ipcu-buffer";
+
+	};
+};
+

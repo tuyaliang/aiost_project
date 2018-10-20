@@ -1,0 +1,31 @@
+#
+# Socionext Network device configuration
+#
+
+config NET_VENDOR_SOCIONEXT
+	bool "Socionext devices"
+	default y
+	---help---
+	  If you have a network (Ethernet) card belonging to this class, say Y
+	  and read the Ethernet-HOWTO, available from
+	  <http://www.tldp.org/docs.html#howto>.
+
+	  Note that the answer to this question doesn't directly affect the
+	  the questions about Socionext cards. If you say Y, you will be asked for
+	  your specific card in the following questions.
+
+if NET_VENDOR_SOCIONEXT
+
+config NET_SOCIONEXT_OGMA
+	tristate "Socionext OGMA network support"
+	depends on OF
+	select PHYLIB
+	select MII
+help
+	  Enable for OGMA support of Socionext FGAMC4 IP
+	  Provides Gigabit ethernet support
+
+	  To compile this driver as a module, choose M here: the module will be
+	  called ogma.  If unsure, say N.
+
+endif # NET_VENDOR_SOCIONEXT

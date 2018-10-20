@@ -1,0 +1,400 @@
+/dts-v1/;
+
+#include "skeleton.dtsi"
+#include <dt-bindings/interrupt-controller/irq.h>
+#include <dt-bindings/input/input.h>
+#include "mb86s27.dtsi"
+
+/ {
+	model = "Socionext MB86S27 Evaluation Board";
+	compatible = "socionext,mb86s27eb",
+		     "socionext,mb86s27",
+		     "socionext,milbeaut-evb";
+	interrupt-parent = <&gic>;
+
+	aliases {
+	};
+
+	chosen {
+		bootargs = "consoleblank=0 loglevel=4 root=/dev/mmcblk0p2 rootwait rw console=ttyUSI0,115200n8 console=/dev/tty1 ";
+//		bootargs = "loglevel=4 root=ubi0:mb86s27eb-rootfs ubi.mtd=2 rootwait rw console=ttyUSI0,115200n8 rootfstype=ubifs";
+                linux,initrd-start = <0x70000000>;
+                linux,initrd-end =   <0x70001000>;
+	};
+
+	memory@40000000 {
+		device_type = "memory";
+		reg = <0x40000000 0x80000000>;
+	};
+
+        i2c0 {
+                clock-frequency = <100000>;
+
+		/* sensor control */
+	};
+
+        i2c1 {
+                clock-frequency = <100000>;
+
+		/* LCD panel control */
+
+                ak4642: ak4642@13 {
+			compatible = "asahi-kasei,ak4642", "ak4642";
+			reg = <0x13>; /* CAD pulled HI */
+                };
+	};
+        i2c2 {
+                clock-frequency = <100000>;
+
+                rx8025: rx8025@32 {
+                        compatible = "epson,rx8025", "rx8025";
+                        reg = <0x32>;
+                };
+                pca9539: pca9539@74 {
+                        compatible = "nxp,pca9539", "pca9539";
+			gpio-controller;
+			#gpio-cells = <2>;
+                        reg = <0x74>;
+			interrupt-parent = <&pinctrl>;
+			interrupts = <6 GPIO_ACTIVE_HIGH>; /* fpint31 ? check */
+                };
+                s6ap412: s6ap412@2d {
+                        compatible = "spansion,s6ap412", "s6ap412";
+                        reg = <0x2d>;
+
+			/*
+			 * on mb86s27 EVB all three dc-dc converters are
+			 * forced on by an external sequencing scheme
+			 * using CTL1 - CTL3 pins, so I2C request to
+			 * turn off the converters is ignored.  Hence they
+			 * are marked up as "always on"
+			 */
+
+			regulators {
+				reg_dvfs: dd1 {
+					regulator-name = "dd1";
+					regulator-min-microvolt =  <700000>;
+					regulator-max-microvolt = <1200000>;
+					regulator-boot-on;
+					regulator-always-on;
+        		        };
+				reg_1v8: dd2 {
+					regulator-name = "dd2";
+					regulator-min-microvolt = <1800000>;
+					regulator-max-microvolt = <1800000>;
+					regulator-boot-on;
+					regulator-always-on;
+        		        };
+				reg_3v3: dd3 {
+					regulator-name = "dd3";
+					regulator-min-microvolt = <3300000>;
+					regulator-max-microvolt = <3300000>;
+					regulator-boot-on;
+					regulator-always-on;
+				};
+			};
+		};
+	};
+
+	cpus {
+		cpu@0 {
+			cpu0-supply = <&reg_dvfs>;
+		};
+	};
+
+	/* used for test on EVB CN36
+	spi3: usio_spi@2c090030 {
+		status = "okay";
+		cs-gpios = <&pinctrl PA0 GPIO_ACTIVE_HIGH>;
+		flash@0 {
+			compatible = "spansion,s25fl512s";
+			spi-max-frequency = <62500000>;
+			spi-rx-bus-width = <4>;
+			spi-tx-bus-width = <4>;
+			reg = <0>;
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			spipart0@0 {
+				label = "spi-firmware";
+				reg = <0 0x200000>;
+			};
+			spipart1@1 {
+				label = "spi-romfs";
+				reg = <0x200000 0xe00000>;
+			};
+		};
+	};
+	*/
+
+	spi3: usio_spi@2c090030 {
+		status = "okay";
+		cs-gpios = <&pinctrl P80 GPIO_ACTIVE_HIGH>;
+		panel@0 {
+			compatible = "casio,com3ot38391";
+			reg = <0>;
+			/* native panel backlight disabled as done by gpio */
+			/* backlight; */
+			spi-max-frequency = <10000000>;
+		};
+	};
+
+	backlight@bl1{
+		compatible = "gpio-backlight";
+		gpios = <&pinctrl P90 GPIO_ACTIVE_HIGH>;
+		default-on;
+	};
+
+	pinctrl: pinctrl@18002000 {
+		reg = <0x18002000 0x1000>,
+		      <0xfff6f000 0x1000>;
+		reg-names = "pinctrl", "exiu";
+	};	
+
+        usio4: usio_uart@2c090040 {
+                status = "okay";
+		index = <0>;
+	};
+
+	usio5: usio_uart@2c090050 {
+		status = "okay";
+		index = <1>;
+	};
+
+	pcie0: pcie@2b080000 {
+		status = "okay";
+	};
+
+        gpio-leds {
+                compatible = "gpio-leds";
+
+                led8 {
+                        label = "led8";
+                        gpios = <&pinctrl PU4 GPIO_ACTIVE_HIGH>;
+                        linux,default-trigger = "mmc0";
+                };
+                led9 {
+                        label = "led9";
+                        gpios = <&pinctrl P40 GPIO_ACTIVE_HIGH>;
+                        linux,default-trigger = "mmc1";
+                };
+                led12 {
+                        label = "led12";
+                        gpios = <&pinctrl P37 GPIO_ACTIVE_HIGH>;
+                        linux,default-trigger = "heartbeat";
+                };
+                led13 {
+                        label = "led13";
+                        gpios = <&pinctrl P41 GPIO_ACTIVE_HIGH>;
+                        linux,default-trigger = "off";
+                };
+	};
+
+	gpio_keys {
+		compatible = "gpio-keys";
+
+		key_a { /* half shutter */
+			label = "keyA";
+			gpios = <&pinctrl P34 GPIO_ACTIVE_HIGH>; /* fpint28 */
+			linux,code = <KEY_A>;
+		};
+		key_b { /* full shutter */
+			label = "keyB";
+			gpios = <&pinctrl P35 GPIO_ACTIVE_HIGH>; /* fpint29 */
+			linux,code = <KEY_B>;
+		};
+		key_1 {
+			label = "key1";
+			gpios = <&pca9539 4 GPIO_ACTIVE_HIGH>;
+			linux,code = <KEY_1>;
+		};
+		key_2 {
+			label = "key2";
+			gpios = <&pca9539 5 GPIO_ACTIVE_HIGH>;
+			linux,code = <KEY_2>;
+		};
+		key_3 {
+			label = "key3";
+			gpios = <&pca9539 6 GPIO_ACTIVE_HIGH>;
+			linux,code = <KEY_3>;
+		};
+		key_4 {
+			label = "key4";
+			gpios = <&pca9539 7 GPIO_ACTIVE_HIGH>;
+			linux,code = <KEY_4>;
+		};
+
+		key_up {
+			label = "keyup";
+			gpios = <&pca9539 8 GPIO_ACTIVE_HIGH>;
+			linux,code = <KEY_UP>;
+		};
+		key_down {
+			label = "keydown";
+			gpios = <&pca9539 10 GPIO_ACTIVE_HIGH>;
+			linux,code = <KEY_DOWN>;
+		};
+		key_left {
+			label = "keyleft";
+			gpios = <&pca9539 9 GPIO_ACTIVE_HIGH>;
+			linux,code = <KEY_LEFT>;
+		};
+		key_right {
+			label = "keyright";
+			gpios = <&pca9539 11 GPIO_ACTIVE_HIGH>;
+			linux,code = <KEY_RIGHT>;
+		};
+		key_enter {
+			label = "keyenter";
+			gpios = <&pca9539 12 GPIO_ACTIVE_HIGH>;
+			linux,code = <KEY_ENTER>;
+		};
+
+		key_m {
+			label = "keym";
+			gpios = <&pca9539 0 GPIO_ACTIVE_HIGH>;
+			linux,code = <KEY_M>;
+		};
+		key_n {
+			label = "keyn";
+			gpios = <&pca9539 1 GPIO_ACTIVE_HIGH>;
+			linux,code = <KEY_N>;
+		};
+		key_o {
+			label = "keyo";
+			gpios = <&pca9539 2 GPIO_ACTIVE_HIGH>;
+			linux,code = <KEY_O>;
+		};
+		key_p {
+			label = "keyp";
+			gpios = <&pca9539 3 GPIO_ACTIVE_HIGH>;
+			linux,code = <KEY_P>;
+		};
+	};
+
+	nand: nand@ff900000 {
+		nand-ecc-mode = "hw";
+		nand-on-flash-bbt;
+
+		/* 2 x 512MiB NAND = 1 GiB */
+
+		partition@0 {
+			label = "ROM tables";
+			reg = <0x0 0x40000>;
+		};
+		partition@40000 {
+			label = "boot";
+			reg = <0x40000 0x01fc0000>;
+		};
+		partition@0x08100000 {
+			label = "Rootfs0";
+			reg = <0x08100000 0x04000000>;
+		};
+		partition@0x14180000 {
+			label = "Rootfs1";
+			reg = <0x14180000 0x04000000>;
+		};
+		partition@0x18180000 {
+			label = "Data";
+			reg = <0x18180000 0x06B00000>;
+		};
+	};
+	fdb0: fdb.0 {
+		videophy0: dpi@fb0 {
+			mode = "320x480x32bpp";
+		};
+	};
+
+	videomodes@0 {
+                compatible = "video-modes";
+                mode0: mode@0 {
+			mode  = "320x480x32bpp";
+			/* <fb H size in px   output px (scaler)>
+			 *
+			 * This panel has 960 subpx per line, 3 subpx = 1 px
+			 * so real resolution is 320 x 480.  But 1px (3 subpx)
+			 * is at 2:1 aspect ratio, so we have to define the
+			 * framebuffer to be 640 x 480, and then subsample
+			 * 2:1 at the DISP8M output to get undistorted
+			 * output
+			 */
+			hactive = <640 320>; /* 8-bit x3 = 960clk, HTOT=1024 */
+			vactive = <480 480>;
+			hback-porch = <11>; /* 8+3 in panel */
+			hfront-porch = <52>;
+			hsync-len = <1>;
+			vback-porch = <2>;
+			vfront-porch = <1>;
+			vsync-len = <1>;
+			flags = <0x25>; /* h high, v high, de high */
+			clock = <27000>; /* 27MHz link clock */
+			bpp = <32>;
+			width-mm = <61>;
+			height-mm = <46>;
+			/* scanout-rotation = <0>; */
+			red_offset      = <16>;
+			red_length      = <8>;
+			green_offset    = <8>;
+			green_length    = <8>;
+			blue_offset     = <0>;
+			blue_length     = <8>;
+			alpha_offset    = <24>;
+			alpha_length    = <8>;
+                };
+	};
+
+	sn_ipcufs: snipcufs@0 {
+		compatible = "socionext,ipcufs-client";
+		mboxes = <&ipcu 0>;	// IPCUFS i/f at Linux
+		rtos-mtp-if = <6>;	// IPCUFS i/f at RTOS
+	};
+
+	/*
+	 * By default IPCU driver exposes kernel interfaces for other kernel
+	 * drivers.  If you are sure you know what you are doing and what problems
+	 * will be caused, you can disable kernel driver access to IPCU and allow
+	 * userland only to access it directly.
+	 *
+	 * DISABLED BY DEFAULT
+
+	snrtos_ipcu: snrtos@0 {
+		compatible = "socionext,rtos-client";
+		mboxes = <&ipcu 0>;	// Linux owns cpu i/f 0
+		dst-mask = <0x2>;	//  assuming RTOS owns cpu i/f 1
+	};
+
+	ipcu_client0: ipc@0 {
+		status = "disabled";
+	};
+	ipcu_client1: ipc@1 {
+		status = "disabled";
+	};
+	ipcu_client2: ipc@2 {
+		status = "disabled";
+	};
+	ipcu_client3: ipc@3 {
+		status = "disabled";
+	};
+	ipcu_client4: ipc@4 {
+		status = "disabled";
+	};
+	ipcu_client5: ipc@5 {
+		status = "disabled";
+	};
+	ipcu_client6: ipc@6 {
+		status = "disabled";
+	};
+	ipcu_client7: ipc@7 {
+		status = "disabled";
+	};
+
+	*/
+
+	uio_sni: uiosni@0 {
+		compatible = "socionext,uiosni";
+		uioname = "rtos-bulk-data";
+		reg = <0x80000000 0x400000>;
+		reg-names = "bulk";
+	};
+
+};

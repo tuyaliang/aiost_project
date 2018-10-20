@@ -1,0 +1,17 @@
+config FDB_HDMITX14
+	tristate "Socionext HDMI 1.4 Head support"
+	depends on FB
+	help
+	  This supports the HDMI 1.4 Video Output head found on MB86S70
+
+config FB_FDB_DISP8M
+	tristate "Socionext M8M DISP 2D Graphics Unit"
+	depends on FB
+	select FB_CFB_FILLRECT
+	select FB_CFB_COPYAREA
+	select FB_CFB_IMAGEBLIT
+	help
+	  Select 'y' or 'm' to build framebuffer support for
+	  Socionext DISP graphics unit which is used in, eg,
+	  Socionext mb86s27 SoC
+

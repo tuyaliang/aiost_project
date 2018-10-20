@@ -1,0 +1,913 @@
+#include "sc2000.dtsi"
+#include "mlb01-rtos.h"
+
+/ {
+	compatible = "milbeaut,sc2000a", "socionext,milbeaut-evb";
+	interrupt-parent = <&gic>;
+
+	memory {
+		device_type = "memory";
+		/* Assigned memory is 0x0c000000 and the last 1MB is used for
+		   Hibernation */
+		reg = <0x40000000  0x0BF00000>;
+	};
+
+	cpus {
+		cpu@3 {
+			device_type = "cpu";
+			compatible = "arm,cortex-a7";
+			reg = <0xf03>; /* Linux on CPU3 only */
+		};
+	};
+	gic: interrupt-controller@1d000000 {
+		black-list = <0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21    23 24       27    29 30       33 34    36       39    41    43 44    46    48    50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90    92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 123 124 125 126 127 128 129 130 131 132 133 134 135 136 137 138 139 140     142 143 144 145 146 147 148     150 151 152 153 154 155 156 157 158 159 160 161 162 163 164 165 166 167 168 169 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 191 192 193 194 195 196 197 198 199 200 201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 232 233 234 235 236 237 238 239 240 241 242 243 244 245 246 247 248 249 250 251 252 253 254 255 256 257 258 259 260                         267 268 269 270 271 272         275 276 277 278 279 280 281 282 283 284 285 286 287>;
+//		black-list = <0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 123 124 125 126 127 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 143 144 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159 160 161 162 163 164 165 166 167 168 169 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 191 192 193 194 195 196 197 198 199 200 201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 232 233 234 235 236 237 238 239 240 241 242 243 244 245 246 247 248 249 250 251 252 253 254 255 256 257 258 259 260 261 262 263 264 265 266 267 268 269 270 271 272 273 274 275 276 277 278 279 280 281 282 283 284 285 286 287>;
+	};
+
+	mlb01-clk-tree@ { /* see page-125 */
+		clocks {
+			pll1: pll1 {
+				read-only;
+			};
+			pll2: pll2 {
+				read-only;
+			};
+			pll6: pll6 { /* CLK 6-1 */
+				read-only;
+			};
+
+			pll7: pll7 { /* CLK 7-1 */
+				read-only;
+			};
+
+			pll10: pll10 {
+				read-only;
+			};
+
+			pll11: pll11 { /* CLK 11-1 */
+				read-only;
+			};
+
+			emmcclk: emmcclk {
+				read-only;
+			};
+
+			spiclk_mux_0: spiclk_mux_0 {
+				read-only;
+			};
+
+			spiclk_mux_1: spiclk_mux_1 {
+				read-only;
+			};
+
+			spiclk: spiclk {
+				read-only;
+			};
+
+			mclk400: mclk400 {
+				read-only;
+			};
+
+			mclk200: mclk200 {
+				read-only = <1>;
+			};
+
+			aclk400: aclk400 {
+				read-only;
+			};
+
+			aclk300: aclk300 {
+				read-only;
+			};
+
+			aclk: aclk {
+				read-only;
+			};
+
+			aclkexs: aclkexs {
+				read-only;
+			};
+
+			hclk: hclk {
+				read-only;
+			};
+
+			hclkbmh: hclkbmh {
+				read-only;
+			};
+
+			pclk: pclk {
+				read-only;
+			};
+
+			rclk: rclk {
+				read-only;
+			};
+
+			uhs1clk0: uhs1clk0 {
+				read-only;
+			};
+
+			uhs1clk1_div1: uhs1clk1_div1 {
+				read-only;
+			};
+
+			uhs1clk1_div2: uhs1clk1_div2 {
+				read-only;
+			};
+
+			uhs1clk1: uhs1clk1 {
+				read-only;
+			};
+
+			uhs1clk2_div1: uhs1clk2_div1 {
+				read-only;
+			};
+
+			uhs1clk2_div2: uhs1clk2_div2 {
+				read-only;
+			};
+
+			uhs1clk2: uhs1clk2 {
+				read-only;
+			};
+
+			uhs2clk: uhs2clk {
+				read-only;
+			};
+
+			nfclk_div1: nfclk_div1 {
+				read-only;
+			};
+
+			nfclk_div2: nfclk_div2 {
+				read-only;
+			};
+
+			nfclk: nfclk {
+				read-only;
+			};
+
+			clk5: clk5 {
+				read-only;
+			};
+		};
+	};
+
+	shared_commem: shared_commem {
+		compatible = "socionext, shared-commem";
+		buf-addr = <GET_IPCU_BUFFER_ADDR_2GB>;
+		buf-size = <GET_IPCU_BUFFER_SIZE_2GB>;
+		sync-addr = <GET_IPCU_SYNC_ADDR_2GB>;
+		sync-size = <GET_IPCU_SYNC_SIZE_2GB>;
+		rd-pointer-addr = <GET_TS_READ_POINTER_ADDR_2GB>;
+		rd-pointer-size = <GET_TS_READ_POINTER_SIZE_2GB>;
+		wt-pointer-addr = <GET_TS_WRITE_POINTER_ADDR_2GB>;
+		wt-pointer-size = <GET_TS_WRITE_POINTER_SIZE_2GB>;
+		movie-rec-addr = <GET_MOVIE_RECORD0_DFS_ADDR_2GB>;
+		movie-rec-size = <GET_MOVIE_RECORD0_DFS_SIZE_2GB>;
+		term-io-addr = <GET_TERMINAL_IO_ADDR_2GB>;
+		term-io-size = <GET_TERMINAL_IO_SIZE_2GB>;
+		string-addr = <GET_STRING_ADDR_2GB>;
+		string-size = <GET_STRING_SIZE_2GB>;
+		ribery-addr = <GET_RIBERY_STREAM_ADDR_2GB>;
+		ribery-size = <GET_RIBERY_STREAM_SIZE_2GB>;
+		audio-addr = <GET_AUDIO_STREAM_ADDR_2GB>;
+		audio-size = <GET_AUDIO_STREAM_SIZE_2GB>;
+		raw-addr = <GET_RAW_STREAM_ADDR_2GB>;
+		raw-size = <GET_RAW_STREAM_SIZE_2GB>;
+		yuv-addr = <GET_YUV_STREAM_ADDR_2GB>;
+		yuv-size = <GET_YUV_STREAM_SIZE_2GB>;
+		hevc-addr = <GET_HEVC_STREAM_ADDR_2GB>;
+		hevc-size = <GET_HEVC_STREAM_SIZE_2GB>;
+		mjpeg-addr = <GET_MJPEG_STREAM_ADDR_2GB>;
+		mjpeg-size = <GET_MJPEG_STREAM_SIZE_2GB>;
+		cap-addr = <GET_CAP_INFO_ADDR_2GB>;
+		cap-size = <GET_CAP_INFO_SIZE_2GB>;
+		osd-addr = <GET_OSD_INFO_ADDR_2GB>;
+		osd-size = <GET_OSD_INFO_SIZE_2GB>;
+		audio-out-addr = <GET_AUDIO_OUT_ADDR_2GB>;
+		audio-out-size = <GET_AUDIO_OUT_SIZE_2GB>;
+		metadata-addr = <GET_METADATA_ADDR_2GB>;
+		metadata-size = <GET_METADATA_SIZE_2GB>;
+		disp-addr = <GET_DISP_SETTING_ADDR_2GB>;
+		rtcp-addr = <GET_RTCP_DATA_ADDR_2GB>;
+		rtcp-size = <SHMEM_RTCP_DATA_SIZE>;
+	};
+
+	sn_ipcufs_rtos: snipcufs_rtos@0 {
+		compatible = "socionext,ipcufs-rtos";
+		ipcu_unit = <0>; // IPCU Unit
+		ipcu_ch = <2 3>;  // Send/Recv Channel
+		reg = <GET_IPCU_BUFFER_ADDR_2GB 0x1000>; // IPCU buffer top addr
+	};
+
+	sn_vblk_rtos: snvblk_rtos@0 {
+		status = "okay";
+		compatible = "socionext,vblk-rtos";
+		ipcu_unit = <1>;  // IPCU Unit
+		ipcu_ch = <1 0>;  // Send/Recv Channel
+		reg = <GET_IPCU_BUFFER_ADDR_2GB 0x1000>; // IPCU buffer top addr
+	};
+
+/* ipcu unit0 */
+	snrtos_ipcu00: snrtos0@0 {
+		compatible = "socionext,ipcu-device";
+		dst-unit = <0>;
+		dst-channel = <0>;
+		interrupts = <0 22 4>;
+		direction = "recv";
+		reg = <0x1c251000 0x1000>, <GET_IPCU_SYNC_ADDR_2GB 0x32>; // IPCU sync top addr
+	};
+
+	snrtos_ipcu01: snrtos0@1 {
+		compatible = "socionext,ipcu-device";
+		dst-unit = <0>;
+		dst-channel = <1>;
+		interrupts = <0 31 4>;
+		direction = "send";
+	};
+
+	snrtos_ipcu02: snrtos0@2 {
+		compatible = "socionext,ipcu-device";
+		dst-unit = <0>;
+		dst-channel = <2>;
+		interrupts = <0 32 4>;
+		direction = "send";
+	};
+
+	snrtos_ipcu03: snrtos0@3 {
+		compatible = "socionext,ipcu-device";
+		dst-unit = <0>;
+		dst-channel = <3>;
+		interrupts = <0 25 4>;
+		direction = "recv";
+	};
+
+	snrtos_ipcu04: snrtos0@4 {
+		compatible = "socionext,ipcu-device";
+		dst-unit = <0>;
+		dst-channel = <4>;
+		interrupts = <0 26 4>;
+		direction = "recv";
+	};
+
+	snrtos_ipcu05: snrtos0@5 {
+		compatible = "socionext,ipcu-device";
+		dst-unit = <0>;
+		dst-channel = <5>;
+		interrupts = <0 35 4>;
+		direction = "send";
+	};
+
+	snrtos_ipcu06: snrtos0@6 {
+		compatible = "socionext,ipcu-device";
+		dst-unit = <0>;
+		dst-channel = <6>;
+		interrupts = <0 28 4>;
+		direction = "recv";
+	};
+
+	snrtos_ipcu07: snrtos0@7 {
+		compatible = "socionext,ipcu-device";
+		dst-unit = <0>;
+		dst-channel = <7>;
+		interrupts = <0 37 4>;
+		direction = "send";
+	};
+
+/* ipcu unit1 */
+	snrtos_ipcu10: snrtos1@0 {
+		compatible = "socionext,ipcu-device";
+		dst-unit = <1>;
+		dst-channel = <0>;
+		interrupts = <0 38 4>;
+		direction = "recv";
+		reg = <0x1c252000 0x1000>, <GET_IPCU_SYNC_ADDR_2GB 0x32>; // IPCU sync top addr
+	};
+
+	snrtos_ipcu11: snrtos1@1 {
+		compatible = "socionext,ipcu-device";
+		dst-unit = <1>;
+		dst-channel = <1>;
+		interrupts = <0 45 4>;
+		direction = "send";
+	};
+
+	snrtos_ipcu12: snrtos1@2 {
+		compatible = "socionext,ipcu-device";
+		dst-unit = <1>;
+		dst-channel = <2>;
+		interrupts = <0 40 4>;
+		direction = "recv";
+	};
+
+	snrtos_ipcu13: snrtos1@3 {
+		compatible = "socionext,ipcu-device";
+		dst-unit = <1>;
+		dst-channel = <3>;
+		interrupts = <0 47 4>;
+		direction = "send";
+	};
+
+	snrtos_ipcu14: snrtos1@4 {
+		compatible = "socionext,ipcu-device";
+		dst-unit = <1>;
+		dst-channel = <4>;
+		src-int-ch = <12>;
+		dst-int-ch = <5>;
+		interrupts = <0 43 4>;
+		direction = "recv";
+	};
+
+	snrtos_ipcu15: snrtos1@5 {
+		compatible = "socionext,ipcu-device";
+		dst-unit = <1>;
+		dst-channel = <5>;
+		src-int-ch = <10>;
+		dst-int-ch = <13>;
+		interrupts = <0 48 4>;
+		direction = "send";
+	};
+
+	sdhci1: mmc@1b000000 { /* CH1 UHS-I/WiFi CN6 */
+		keep-power-in-suspend;
+		non-removable;
+		quirk-host-off-card-on;
+	};
+
+	sdhci2: mmc@19130000 {	/* Used by RTOS */
+		status = "disabled";
+	};
+
+	emmc: mmc@19120000 {	/* Used by RTOS */
+		status = "disabled";
+	};
+
+	pinctrl: pinctrl@1d022000 {
+//	Because EXIU is cared by RTOS
+		reg = <0x1d022000 0x1000>;
+		reg-names = "pinctrl";
+		blacklist = <	/* P0 thru PP, bit = 1 = illegal */
+			0xFFFF //P1P0
+			0xFFFF //P3P2
+			0xFFFF //P5P4
+			0xDFFF //P7P6 P75
+			0xFF7F //P9P8　P87
+			0xFFFF //PBPA
+			0xFFFF //PDPC
+			0xE7CF //PFPE PE4,PE5,PF3,PF4
+			0xFFFF //PHPG
+			0xFFFF //PJPW
+			0xFFFF //PLPK
+			0xFFFF //PNPM
+			0xFBFF //PPPY P2 
+		 >;
+//	Because EXIU is cared by RTOS
+		interrupts = <>;
+		interrupt-names = <>;
+	};
+	usb_ehci: usb@1b070000 {
+		status = "disabled";
+	};
+/*
+	sni_spi0:sni_spi@1e800000 {
+		status = "okay";
+		cs-nums = <4>;
+		cs-gpios = <&pinctrl MLB01_PIN(D,3) GPIO_ACTIVE_HIGH>, <&pinctrl MLB01_PIN(D,4) GPIO_ACTIVE_HIGH>, <&pinctrl MLB01_PIN(D,5) GPIO_ACTIVE_HIGH>, <&pinctrl MLB01_PIN(D,6) GPIO_ACTIVE_HIGH>;
+
+		spi0@0 {
+			compatible = "socionext,sni-spi";
+			reg = <0>;
+			spi-max-frequency = <10000000>;
+			ssout-cont = <0>;
+		};
+		spi1@1 {
+			compatible = "socionext,sni-spi";
+			reg = <1>;
+			spi-max-frequency = <10000000>;
+			ssout-cont = <1>;
+		};
+		spi2@2 {
+			compatible = "socionext,sni-spi";
+			reg = <2>;
+			spi-max-frequency = <10000000>;
+			ssout-cont = <2>;
+		};
+		spi3@3 {
+			compatible = "socionext,sni-spi";
+			reg = <3>;
+			spi-max-frequency = <10000000>;
+			ssout-cont = <0>;
+		};
+	};
+	sni_spi1:sni_spi@1e800100 {
+		status = "okay";
+		cs-nums = <4>;
+
+		spi0@0 {
+			compatible = "socionext,sni-spi";
+			reg = <0>;
+			spi-max-frequency = <10000000>;
+			ssout-cont = <0>;
+		};
+		spi1@1 {
+			compatible = "socionext,sni-spi";
+			reg = <1>;
+			spi-max-frequency = <10000000>;
+			ssout-cont = <1>;
+		};
+		spi2@2 {
+			compatible = "socionext,sni-spi";
+			reg = <2>;
+			spi-max-frequency = <10000000>;
+			ssout-cont = <2>;
+		};
+		spi3@3 {
+			compatible = "socionext,sni-spi";
+			reg = <3>;
+			spi-max-frequency = <10000000>;
+			ssout-cont = <0>;
+		};
+	};
+	sni_spi2:sni_spi@1e800200 {
+		status = "okay";
+		cs-nums = <1>;
+		cs-gpios = <&pinctrl MLB01_PIN(B,1) GPIO_ACTIVE_HIGH>;
+
+		spi0@0 {
+			compatible = "socionext,sni-spi";
+			reg = <0>;
+			spi-max-frequency = <10000000>;
+			ssout-cont = <1>;
+		};
+	};
+*/
+
+
+	i2c0: i2c@1e003000 {
+		status = "disabled";
+		clock-frequency = <100000>;
+		gpios = <&pinctrl MLB01_PIN(C,0) GPIO_ACTIVE_HIGH>;
+	};
+
+	i2c1: i2c@1e003400 {
+		status = "disabled";
+		clock-frequency = <100000>;
+		gpios = <&pinctrl MLB01_PIN(C,1) GPIO_ACTIVE_HIGH>;
+	};
+
+	i2c2: i2c@1e003800 {
+		status = "disabled";
+		clock-frequency = <100000>;
+		gpios = <&pinctrl MLB01_PIN(C,3) GPIO_ACTIVE_HIGH>;
+	};
+
+	gpio-leds {
+		compatible = "gpio-leds";
+
+		/* These leds are controlled by M0, use it only for debug */
+/*		led10 {
+			label = "led10";
+			gpios = <&pinctrl_m0 MLB01_PIN(2,4) GPIO_ACTIVE_HIGH>;
+			linux,default-trigger = "off";
+		};
+		led11 {
+			label = "led11";
+			gpios = <&pinctrl_m0 MLB01_PIN(2,5) GPIO_ACTIVE_HIGH>;
+			linux,default-trigger = "off";
+		};
+		led12 {
+			label = "led12";
+			gpios = <&pinctrl_m0 MLB01_PIN(2,6) GPIO_ACTIVE_HIGH>;
+			linux,default-trigger = "off";
+		};
+		led13 {
+			label = "led13";
+			gpios = <&pinctrl_m0 MLB01_PIN(2,7) GPIO_ACTIVE_HIGH>;
+			linux,default-trigger = "off";
+		};
+*/
+
+		led_dumy1 {
+			label = "led_dumy1";
+			gpios = <&pinctrl MLB01_PIN(F,4) GPIO_ACTIVE_HIGH>;
+			linux,default-trigger = "off";
+		};
+		led_dumy2 {
+			label = "led_dumy2";
+			gpios = <&pinctrl MLB01_PIN(F,3) GPIO_ACTIVE_HIGH>;
+			linux,default-trigger = "off";
+		};
+	};
+
+	gpio_keys {
+		compatible = "gpio-keys";
+		status = "disable";
+		key_dummy {
+			label = "keydummy";
+			gpios = <&pinctrl MLB01_PIN(7,5) GPIO_ACTIVE_HIGH>;
+			linux,code = <KEY_A>;
+		};
+	};
+	fb_common {
+		ipcu_unit = <1>; // IPCU Unit
+		ipcu_ch = <3 2>;  // Send/Recv Channel
+		reg = <GET_DISP_SETTING_ADDR_2GB SHMEM_GR_IPCU_SIZE>; // IPCU buffer top address
+	};
+	fb_gr10: fb@28902000 {
+		/* HDMI */ 
+		num-set-pattern =<6>;
+		pattern-name="fhd-vga","fhd", "fhd4444", "hd", "4k", "4k4444" ;
+		fhd-vga {
+			dis_size = <640 480>; /* xres and yres */
+			dis_virtual_size = <1024 768>;/*xres_virtual and yres_virtual */
+			dis_expand_horizonal = <9 4>;
+			dis_expand_vertical = <9 4>;
+			dis_format = <0>;/*  0: RGBA8, 2: RGBA4 */
+			dis_position = <240 0 >;
+			byte_num_line = <4096>;
+			a_data_byte_num_line = <0>;
+			draw_addrss = <0xA982C000 0x546000>;
+			draw_buffer_num = <1>; /* Num of drawing buffer is 1 */
+			dis_pan_step = <2 2>;/* Pan step */
+			dis_triger = <0>;/* Set GR's show or not. 1: enable. 0: disable */
+			area00 {
+				positon = <0 0>;
+				size = <128 240>;
+				show_enable = <1>;
+			};
+			area01 {
+				positon = <0 240>;
+				size = <128 240>;
+				show_enable = <1>;
+			};
+			area02 {
+				positon = <128 0>;
+				size = <128 240>;
+				show_enable = <1>;
+			};
+
+			area03 {
+				positon = <128 240>;
+				size = <128 240>;
+				show_enable = <1>;
+			};
+			area04 {
+				positon = <256 0>;
+				size = <128 240>;
+				show_enable = <1>;
+			};
+			area05 {
+				positon = <256 240>;
+				size = <128 240>;
+				show_enable = <1>;
+			};
+			area06 {
+				positon = <384 0>;
+				size = <128 240>;
+				show_enable = <1>;
+			};
+			area07 {
+				positon = <384 240>;
+				size = <128 240>;
+				show_enable = <1>;
+			};
+			area08 {
+				positon = <512 0>;
+				size = <128 240>;
+				show_enable = <1>;
+			};
+			area09 {
+				positon = <512 240>;
+				size = <128 240>;
+				show_enable = <1>;
+			};
+		};
+		fhd {
+			dis_size = <640 360>; /* xres and yres */
+			dis_virtual_size = <1024 768>;/*xres_virtual and yres_virtual */
+			dis_expand_horizonal = <3 1>;
+			dis_expand_vertical = <3 1>;
+			dis_format = <0>;/*  0: RGBA8, 2: RGBA4 */
+			dis_position = <0 0 >;
+			byte_num_line = <4096>;
+			a_data_byte_num_line = <0>;
+			draw_addrss = <0xA982C000 0x546000>;
+			draw_buffer_num = <1>; /* Num of drawing buffer is 1 */
+			dis_pan_step = <2 2>;/* Pan step */
+			dis_triger = <0>;/* Set GR's show or not. 1: enable. 0: disable */
+			area00 {
+				positon = <0 0>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area01 {
+				positon = <0 180>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area02 {
+				positon = <128 0>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+
+			area03 {
+				positon = <128 180>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area04 {
+				positon = <256 0>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area05 {
+				positon = <256 180>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area06 {
+				positon = <384 0>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area07 {
+				positon = <384 180>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area08 {
+				positon = <512 0>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area09 {
+				positon = <512 180>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+		};
+		fhd4444 {
+			dis_size = <640 360>; /* xres and yres */
+			dis_virtual_size = <1024 768>;/*xres_virtual and yres_virtual */
+			dis_expand_horizonal = <2 1>;
+			dis_expand_vertical = <2 1>;
+			dis_format = <2>;/*  0: RGBA8, 2: RGBA4 */
+			dis_position = <0 0 >;
+			byte_num_line = <4096>;
+			a_data_byte_num_line = <0>;
+			draw_addrss = <0xA982C000 0x546000>;
+			draw_buffer_num = <2>; /* Num of drawing buffer is 2 */
+			dis_pan_step = <4 4>;/* Pan step */
+			dis_triger = <0>;/* Set GR's show or not. 1: enable. 0: disable */
+			area00 {
+				positon = <0 0>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area01 {
+				positon = <0 180>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area02 {
+				positon = <128 0>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+
+			area03 {
+				positon = <128 180>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area04 {
+				positon = <256 0>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area05 {
+				positon = <256 180>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area06 {
+				positon = <384 0>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area07 {
+				positon = <384 180>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area08 {
+				positon = <512 0>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area09 {
+				positon = <512 180>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+		};
+		hd {
+			dis_size = <640 360>; /* xres and yres */
+			dis_virtual_size = <1024 768>;/*xres_virtual and yres_virtual */
+			dis_expand_horizonal = <2 1>;
+			dis_expand_vertical = <2 1>;
+			dis_format = <0>;/*  0: RGBA8, 2: RGBA4 */
+			dis_position = <0 0 >;
+			byte_num_line = <4096>;
+			a_data_byte_num_line = <0>;
+			draw_addrss = <0xA982C000 0x546000>;
+			draw_buffer_num = <1>; /* Num of drawing buffer is 1 */
+			dis_pan_step = <2 2>;/* Pan step */
+			dis_triger = <0>;/* Set GR's show or not. 1: enable. 0: disable */
+			area00 {
+				positon = <0 0>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area01 {
+				positon = <0 180>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area02 {
+				positon = <128 0>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+
+			area03 {
+				positon = <128 180>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area04 {
+				positon = <256 0>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area05 {
+				positon = <256 180>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area06 {
+				positon = <384 0>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area07 {
+				positon = <384 180>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area08 {
+				positon = <512 0>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area09 {
+				positon = <512 180>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+		};
+		4k {
+			dis_size = <640 360>; /* xres and yres */
+			dis_virtual_size = <1024 768>;/*xres_virtual and yres_virtual */
+			dis_expand_horizonal = <6 1>;
+			dis_expand_vertical = <6 1>;
+			dis_format = <0>;/*  0: RGBA8, 2: RGBA4 */
+			dis_position = <0 0 >;
+			byte_num_line = <4096>;
+			a_data_byte_num_line = <0>;
+			draw_addrss = <0xA982C000 0x546000>;
+			draw_buffer_num = <1>; /* Num of drawing buffer is 1 */
+			dis_pan_step = <2 2>;/* Pan step */
+			dis_triger = <0>;/* Set GR's show or not. 1: enable. 0: disable */
+			area00 {
+				positon = <0 0>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area01 {
+				positon = <0 180>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area02 {
+				positon = <128 0>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+
+			area03 {
+				positon = <128 180>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area04 {
+				positon = <256 0>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area05 {
+				positon = <256 180>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area06 {
+				positon = <384 0>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area07 {
+				positon = <384 180>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area08 {
+				positon = <512 0>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area09 {
+				positon = <512 180>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+		};
+		4k4444 {
+			dis_size = <640 360>; /* xres and yres */
+			dis_virtual_size = <1024 768>;/*xres_virtual and yres_virtual */
+			dis_expand_horizonal = <6 1>;
+			dis_expand_vertical = <6 1>;
+			dis_format = <2>;/*  0: RGBA8, 2: RGBA4 */
+			dis_position = <0 0 >;
+			byte_num_line = <2048>;
+			a_data_byte_num_line = <0>;
+			draw_addrss = <0xA982C000 0x546000>;
+			draw_buffer_num = <2>; /* Num of drawing buffer is 2 */
+			dis_pan_step = <4 4>;/* Pan step */
+			dis_triger = <0>;/* Set GR's show or not. 1: enable. 0: disable */
+			area00 {
+				positon = <0 0>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area01 {
+				positon = <0 180>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area02 {
+				positon = <128 0>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+
+			area03 {
+				positon = <128 180>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area04 {
+				positon = <256 0>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area05 {
+				positon = <256 180>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area06 {
+				positon = <384 0>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area07 {
+				positon = <384 180>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area08 {
+				positon = <512 0>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+			area09 {
+				positon = <512 180>;
+				size = <128 180>;
+				show_enable = <1>;
+			};
+		};
+	};
+};

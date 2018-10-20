@@ -1,0 +1,154 @@
+a766d6061f1bec6c8435179f2a26af6c5fa1643f mbox fix
+9fc73ccb9c8a8e86cf887eed28c898841d67ebe8 cfg80211 db
+ae1d4527dc6848c97cf00a4c0ffb2246aa698bd8 exfat
+9fbf8f021f5249101567088f7169976fe129ec0f exfat fixes
+2b3e17673811951bbbc23c2b185a93206700b412 regulator add s6ap412 driver
+0fa9aea957ebfbbfcc5312ecc1ebaa858fe63063 alsa ak4642 add onboard speaker path
+09ab1573c4e853a70302e7c5f49f316cd0925f97 arm: m8m: basic support
+bf788a3ca15249b37076422704282af5866d9abb usio as uart tty
+c1a301c67e4699cb94b48a69e655f094f4470aaf clk: add clock driver for m8m platform
+82e56fdf7556edb5b8ccdce7052f90e0a250b8b5 m8m powerdomain
+46feacef8b533e8dbf1cba999b9481ca49e3633b pinctrl: add driver for mb86s27
+b9f1998ea5d3163fc93e5eac39a9662caed56d68 mmc sdhci add led as power quirk
+da563485409fe179966d0a0e6a7b0adf0ec3758c mmc sdhci introduce clock change quirk op
+d4d09350d864a7ff5a15e3333eb4ddcde76611cc sdhci add m8m support to f_sdh30
+f2287996b1cbe948cb468ac6801626f31c534e19 apply clock change quirk ops for m8m sd1
+69642fdf3def95a204ae8c29561996eab9333551 sdhci cap sdio irq
+#S 15c8c8e18ff587db9947edc8839518ae24544e4b mmc: core: support UHS-II in core stack.
+#S cc71afa34db0b853c436d7f56d72c9e311e413ea mmc: sdhci: support UHS-II in SDHCI host.
+e11f2a81f3994100a018147c1fc50a4625ebe6b3 net: ethernet driver: Socionext OGMA
+82140b9a987ab5abf3dcd4f15c53dba48b28d19c ogma integration
+dac8550b95f4ecb8cb5e8ddca1238b32aedd6184 ogma workaround
+b1d79e035ee028fbcc0e183641217f9cf0c4b2be i2c mb8ac0300 add support
+ac4bcdc194985f0322fdaddc43e8f86dd82f1b80 i2c: srlot: add driver
+f6e78dbe4e4a40f8388d47caed468464f73c8fa8 m8m pwm
+590b3ab47c676c598c759de794348f4c5d428753 denali nand
+d01e4fce3b8d3f2ba31d7f4a22705c28a88492d0 arm irq mb8ac0300 exiu add support
+4aee9aa31e4c75130f8a7d26cbd61e0dffa81d6a dma mb8ac0300 add support
+f87c745290c4958bec7704ada5f357caeab8b247 dmaengine: add hdmac driver
+80e0414b81e51228531899c34f56d154c944b30b usb2 otg sneeker 12defb8
+1a2575e3d1ee4cba6e14c1fcccd3c29b2a3a5fc4 usb usb20hdc add m8m support
+b00d80e97ea17dd4e3aa7cc458ffac4ce6a47208 udc: Fix limit on max packet size
+4ba9d2ee58e9f91c068a18fd195f59760755ca03 USB: MTP: sync with Android kernel
+204a65d912df4ed0ee7ac19bc0d6a8c0b677d1b9 mailbox: ipcu: add driver
+44e06041655a51439225e7e13e0685a45fd4c95c mailbox: ipcu: add test driver
+7f26c256ba52629d5fe489d25311efaa579b40b3 snrtos: add client driver for IOCTL i/f
+ed933ca3c9ea8f8f70582519411f948b8808e2f5 ipcufs
+6cf6fede78569938e2730c6bfbab91ee79659933 alsa pcm mb8 socionext
+8599f04c71ad30799e2043a1cf6c56e6693a669d add audio machine driver for mb86s27 + ak4642
+7a38e1ed2b2dea74d6c3ebf9ae60227f4884fabe m8m aud i2s
+c03eb8c5b5093502b5424af1c0449b991fc93961 fdb socionext display bus
+#S 0cf5bf426694e62f23b34c03c60f82e5eb874346 fdb drm
+#S 7fe4900540d759140aad999f6da3e4241cae4a02 m8m video changes
+eacc03125c2ea6da471e18b13bf9c5b7aba0a74d f_hdmi_tx14
+e417f2ccacabaf6e213ce09ebe302153ddc968a2 f_hdmi_tx14 audio
+5d64c56da33ba18c7cea0e36e0690d913c578004 fbdev: introduce Socionext DISP8M Framebuffer driver
+f033abda7696640ed6bff8156a9e64f75d3ec510 casio panel com3ot38391
+cdc214318ccb31b06fa6605486119f6bca171865 usio spi
+13f821dbd4c0fa33df7b8560635f1edd1be3bead pcie
+6e37bf21718bedd22c23cef19750125a899ea7c1 introduce rtos dts variant
+c4439923cc3aac0089e338f538528ea3a98dcf7e arm gic introduce irq blacklist support
+f6e4d3776fb29f494461744f169be65162709b8e ipcufs mount umount indications
+eb293b080445fe00b882e7b91846c4e170c7df44 fix up build
+47187d6294c19df85ea9586c2f22073c1d053a59 USB: Implement new UDC driver
+7b628de0ecef630e0e64c4fc903a67258711f68f Select new SN-UDC driver by default
+6944f380571b474649fd0f2ba167d20ae7901397 remove false dpi interrupt
+33a607780555d1a50c8cac58f0f868f833f5c6ee sn: udc: fix race
+2c4e67c62fca6178754b1ad82c46d0da82a207bf udc: fix plug recycling
+8fd9524b2245ffcac237cba7dc7e48fd8b9e823c udc: trigger dma before callback done
+ab014cc167d7af6053c4e7eceb6e9067529f3add Not use Re-Tuning
+fe42ef7e248c9da4cbc50ab0a07de685d6b11d31 Not use Preset Value
+7f412cb0eb299961b0fd628ed6abc83e2ef4c759 Not use SDR50 Tuning
+
+1aec6dc1f19cfbfb142dcc519ee8692df9dcbaa6 disp8m add hdmi interlaced modes
+590f21d17ec2fb791b975205f0c4ab4fbb8c6acc config libertas
+2f40c4502178474ce7d780338219c80a6e00c8b7 mtd split boot and ubi parts
+f4bb376a283d4e6f778220032d5636fd5abdead7 add mb86s27eb linux DTS
+223e0ed73bf3ab1bf4175b0eba34babb042e75fc clk m8m add blacklist support
+8fadb2620f8bda869930e213dc855834a759a220 pinctrl m8m add blacklist support
+531ad4bff4c1fe82cc4915478174c13dd16ceef0 clean two warnings from m8m code
+06095f6c09f0c76f0e31d7707db6592dc62f024c dts mtd nand allow big enough boot part for initramfs
+101306770aa38f0d03d7dcd84e1b2ec0539eedb3 blacklist update
+65b052b9c027edfe1f28b02297c2f15b6955eb45 Subject: [PATCH] sn: udc: change endpoint descriptors to that we need
+bd5f90e308caa110c9ee35767cb634bb70ecdd86 Use /sbin/finit start. Disable some device. Change NAND structure
+35f248f98a9a38a6f6673269529a31500f0ba27a config copy out m8m_p1_defconfig
+9791b33e6e91a04f2d8608401184ffe416d2c4a6 config reduce p1 adjust product dts
+72c2464c0600639aba605a049f0aa02579ea5df3 pinctrl m8m extend blacklist to extint
+87a7a3ccba3cd45d80776139e9f1911fad573f57 exiu disable on rtos linux variant
+76faa00c71cf91b095e9c3b5a4bba4c0e8da6f6d dts rtos linux blacklist updates
+9e1d8ded95b79121564c991cf3f143755b9f8e92 dts linux rtos usb hdmac irq remove
+8e4903e3f293bc7265270c37dbebacc4ec1964f8 fix multi uart
+178b4ada81eeab726e26f759ce01e170f5382850 Add the DTS/DTSI and config file for SD writer
+0e38b9b63cc310b96d207186a745b15dfd9bde60 Improve DMA rate for USB
+c76e354393a7f99a239c3c7c343e3cf7fdc974f9 Make UART's channel 3 to be used at Linux side
+0ba5a87601c005b84e7cfc6756d3026fe79a8637 Change usable memory size and start address
+0f50a13fd3d0691f80b9536fd916eedfa012b940 Change NAND structure
+83f7f76fc27f574988f2ae7d2e41a68e6f09a1f8 Enable sdhci0 max-frequency in dtsi
+c0c3abdfd601b7ca3e2ff98078e1222682d4b41b repair mcpm for smp
+3aec421b377c87f6b364b3e1e916e390f36fde9d uiosni
+d52512867eddd2c30791d108e3af39b986c79d48 sn: dtsi: update for new udc driver
+dfa7699f9247c0351954d75d0515742002dc42c4 clocksource: arm_global_timer: Allow DT to specify already reset timer counter
+7ce8ab1c7b2c66f2c746e5d563144800842901c8 DT: SN: label global timer node
+db56d04250b9f9074452eab8db2f442710e77a4d exfat: support fatattr command
+90bd0d6609616b00157cbadae6fde2d894ce62ee Set GT also can be used from RTOS CPU
+fd70a1065120b495b3604583c9df0ce6d9dcf6a6 Expand MTP_BULK_BUFFER_SIZE
+2ea5ce7b625776e3835639f4aae8b0a9467a49fc Add mtd area for user setting data
+5c5774dc0bdf6dfb57434a88838bf32eae23ce5d sn_udc: fixes for compliance
+7496f598af516a0e45a6cb6dc2333ee1bba9c5e8 m8m: fix peri-timer dt
+be00f57ce353e8607db3ca7e0a9fae863dd964f7 mmc: sdhci: set CDR register to f_sdh30
+c3a43743c1cf62e0cd6ed3977e4f648754b98716 dtsi: mb86s27: change clocks for cortex-a5-twd-timer
+f98014ccf1e0caa821bec32fa7b3a984f334e2a5 sni: gic: remove noise
+d4e78c31c501b86a05c38259cc9e30df4edf1ff8 Add output of blacklist's index and change bit map at CLOCK and pinctrl when someone want to write but it had been at the blacklist
+417d29d50c65e570dea45323690c6e10bc2da113 f_sdh30: enable slot via sysfs
+56136fc486ae29610f2843a0df805e7d55071ca1 exfat: support O_DIRECT
+9c4c11948cbc7034689796238b7a746a92b0e729 fat: allow time_offset to be up to 24 hours
+e936e03d399897b5dedcc87b9b721c67b1cbe263 fat: add simple validation for directory inode
+f8a751e7d2d1965ffa74388cc20e9ad0804573da fat: add fat_fallocate operation
+2002a5f558af6fbb7fbc45167e76760ba69fc0fe fat: skip cluster allocation on fallocated region
+389577c95321aa9a940e5159dbb6bdb9382463f5 fat: permit to return phy block number by fibmap in fallocated region
+d218c9ee86c5125bab27baa44999d5122f2df12a fat: add config option to set UTF-8 mount option by default
+f86251043fb9a53f613d860e2d95cc0b7b2d24c1 FAT: fix direct I/O support
+fc997c6e06af4630868afe29e1e373b005c2655e f_sdh30: Fix the settings of MMC/eSD Control Register
+936bf03945d70eb7d55e0bddd29f84bcedd2e708 f_sdh30: Fix to reconnect right after changing voltage
+0217c55ab82511cbd72143f60280312fa7db1f20 Remove LED13,LED9,SD1AX,SD1U2CK,SD1U1CK from blacklist
+
+be18b12ef7291148b625ab3c6fe30872714d3b4c sniipcu
+12e320bb53b9c77f15bf100b79653748e3e2fc66 separate test ipcufs
+3f03496e772be045ea48efb664030d2987643e5a ipcu update
+f335e911ceec6e9d1e0ac058bb92b149cfc133f4 ipcufs update
+58c61b40c5c8be2dae20bbeaacf6256301a29c38 ipcufs directory delete fix
+129c67fbe9f527e496e963a382b3d3684ab85a52 test ipcufs add mount option handling
+c338c7921701fa441fdba62b58354de6b4e35e47 test ipcufs multi fake fs support
+860b3df832f5bb631afcd141e34a3da4293e0cff test ipcufs pass the fs name in the protocol
+3c128c827f430fdaf0c461a6a1443ebe35677816 test ipcufs hugefile
+18686f2f836dc84cfac5c581db8ac3f791e078b2 test-ipcufs-multipage-read
+f81a4d7942ef3686016abd9b02905c2adcb7a256 ipcufs multimount statfs
+cfb2b726c71ab7b6920f9c877a9b61ffc53f452f codepages enable everything
+de1311b84995f847a73ff968844a1b52bc1b6a88 ipcu sync and cleanup
+fbcd0036a881ed613eba4f6b32216ecc9cc95145 Improving ipcufs's reading.
+c1f69d8e77c32ed21556ddb39ec7688d21804aad test ipcufs use pfn to phys
+83cb2852164cb3532560f537db2bccc1c890b3df ipcufs use scatterlist for read
+7f507afca59211bdb0f3d8df7f187d740b878bee additional channels 6 and 7 of the ipcu
+567baa3c104f05aa8dac43cacf1e8e750fa485c6 Add direct_IO for IPCUFS
+096b38dbd0fadbb3e661d1c9764db50f60d38a2c ipcufs direct I/O write became usable.
+0b486cd8309bba6df010f312c009249e77a14f58 disgusting mmap hack
+452fd89d1908ea51c55f780af6ff6f36202870ad disgusting uio hack
+
+7358a9d11747b0eff67140f05ab5bf9b2de0d144 m8m-mcpm
+5da8b06c818e7eba2450cf844a49f8d6559837af m8m: switch from mcpm to smp ops
+d414de0554a445c14b2004a00da5cbad918cba39 milbeaut: add m9m and merge with m8m into milbeaut
+0b382d74af8314b449016b9b447b32d4816af3f8 m9m: 101 boot setup
+1e846ee6eeec0b40747b3c10d871a5016cd12473 m9m: update support
+22662151c05a926f327ebd3fffb94719a5a7aa2c m9m: fixes
+01d3cf7c0ffda04447132ad5db1f0f7494357481 m9m: user peri-timer
+543612761de9b78752d5961879e55ac8b035fd11 force delay calibration
+41f92fa59fb63f25d1d36fee9e75320a0aef8e78 hack: disable arch-timer for testing
+0c5b6493c2ff6ed51eaedd1514551979bb42a90a m9m: add clocks for hdmac
+ff60239f3bbfa9db17184996be2ba3c632a1ab25 m9m: disable sdhci until power enabled
+15542380fa9bd3a79ea0b1759ea2bc41e3224844 usio_uart: name tx/rx irqs
+
+b0f6ef8bee2d26ded8de95a3e54be3affbbcf0f7 denali skip bbt
+34f66daff026f7282a40aa646f1a0d1035f1fbed 1)Set memory used for RTOS-Main 2)Set use Initramfs 3)Add Clock tree's black list, but it has not used. 4)Use GT as system timer instead of Timer32
+1491361a110a02e8472f9581fd100641b3f670e5 Add a black-list of GIC and set PMU to disable because  it is cared by M0
+82d9e7fb49c792aba2b114991ce86d40107efb9a Add a config file for customer
+

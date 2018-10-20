@@ -1,0 +1,15 @@
+/* Socionext SC2000A (MLB01) Evaluation Board without RTOS */
+/dts-v1/;
+#include "mlb01-evb.dtsi"
+
+/ {
+	model = "Socionext SC2000A EVB 1core";
+	cpus {
+		cpu@3 {
+			device_type = "cpu";
+			compatible = "arm,cortex-a7";
+			reg = <0xf03>;
+		};
+
+	};
+};

@@ -1,0 +1,30 @@
+config SND_MB8AC0300_PCM
+	tristate "Socionext pcm driver"
+	depends on MB86S7X_HDMAC
+	help
+	  This is the driver for the pcm DMA operations
+	  in Socionext mb8 series ASICs
+
+config SND_SOC_MB86S27_AK4642
+	tristate "SoC Audio support for MB86S27 + AK4642 codec"
+	depends on I2C
+	select SND_SOC_AK4642
+	select SND_MB8AC0300_PCM
+	help
+	  Say Y or M here if you want to
+	  add support for SoC audio on
+	  MB86S70 boards using
+	  WM8973 codec.
+
+config SND_SOC_MB86S70_HDMI
+        tristate "SoC Audio support for MB86S70 HDMI"
+        depends on ARCH_MB86S70 || ARCH_MILBEAUT
+        select SND_SOC_MB86S70_HDMI_DAI
+        select SND_SOC_MB86S70_HDMI_CODEC
+	select SND_MB8AC0300_PCM
+        help
+          Say Y if you want to add support for SoC HDMI audio on MB86S70 chips.
+
+config SND_SOC_MB86S70_HDMI_DAI
+        tristate
+

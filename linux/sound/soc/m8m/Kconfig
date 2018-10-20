@@ -1,0 +1,7 @@
+config SND_I2S_JMILAU8M
+	tristate "Socionext m8m i2s support"
+	depends on RESET_CONTROLLER
+	help
+	  This is the driver for the I2S IP in Fujitsu
+	  m8m series ASICs
+

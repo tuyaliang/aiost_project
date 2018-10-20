@@ -1,0 +1,23 @@
+Socionext mlb01 PWM controller
+
+Required properties:
+ - compatible: should be "socionext,mlb01-pwm"
+ - reg: physical base address and length of the controller's registers.
+	The first one is the apb registers and the second is the DMA area
+	used for motor control / sequencer mode.
+ - clocks: phandle and clock specifier of the PWM reference clock
+ - #pwm-cells: must be 3. See pwm.txt in this directory
+   for a description of the cell format.
+
+Optional properties:
+ - base-rate: set the rate of the clock to this at probe
+
+Example:
+        pwm0: pwm@1e120000 {
+                compatible = "socionext,mlb01-pwm";
+                reg = <0x1e001000 0x400>, <0x1e120000 0x10000>;
+                clocks = <&rclk>;
+                /* all the pwm units share the same clock */
+                base-rate = <13500000>; /* ask for this input rate */
+                #pwm-cells = <3>;
+        };

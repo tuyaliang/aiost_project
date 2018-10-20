@@ -1,0 +1,70 @@
+#
+# Socionext USB2.0 Dual-Role Controller Drivers
+#
+
+config USB_F_USB20HDC
+	tristate 'Socionext USB 2.0 Dual Role controller'
+	depends on USB && (ARCH_MB8AC0300 || ARCH_MB86S70 || ARCH_MILBEAUT)
+	default n
+	help
+	  f_usb20hdc is a dual-role USB controller chip.
+	  that supports both full and high speed USB 2.0 data transfers.
+	  It has nine or more configurable endpoints, and endpoint zero.
+
+	  Say "y" to link the driver statically, or "m" to build a
+	  dynamically linked module called "f_usb20hdc_drc.ko"
+
+
+if USB_F_USB20HDC
+
+choice
+	bool "F_USB20HDC Mode Selection"
+	default USB_F_USB20HDC_DUAL_ROLE if (USB && USB_GADGET)
+	default USB_F_USB20HDC_HOST_ONLY if (USB && !USB_GADGET)
+	default USB_F_USB20HDC_GADGET_ONLY if (!USB && USB_GADGET)
+
+config USB_F_USB20HDC_HOST_ONLY
+	bool "Host only mode"
+	depends on USB=y || USB=USB_F_USB20HDC
+	help
+	  Select this when you want to use F_USB20HDC in
+	  host mode only, thereby the gadget feature will
+	  be regressed. also gadget code will not be included
+	  in this kernel module.
+
+config USB_F_USB20HDC_GADGET_ONLY
+	bool "Gadget only mode"
+	depends on USB_GADGET=y || USB_GADGET=USB_F_USB20HDC
+	select USB_GADGET_DUALSPEED
+	select USB_GADGET_SELECTED
+	help
+	  Select this when you want to use F_USB20HDC in
+	  gadget mode only, thereby the host feature will be regressed.
+	  also host mode code will not be included in this kernel
+	  module.
+
+config USB_F_USB20HDC_DUAL_ROLE
+	bool "Dual Role mode"
+	depends on ((USB=y || USB=USB_F_USB20HDC) && (USB_GADGET=y || USB_GADGET=USB_F_USB20HDC))
+	select USB_GADGET_DUALSPEED
+	select USB_GADGET_SELECTED
+	help
+	  This is the default mode of working of F_USB20HDC controller where
+	  both host and gadget features are enabled.
+	  when this mode is selected, dtb also can interfere dynamic decision
+	  to choose host mode only, gadget mode only, or dual mode. but either
+	  of these mode still included all mode function code.
+
+endchoice
+
+config USB_F_USB20HDC_USED_DMA_TRANSFER
+        bool "Use DMA transfer"
+        depends on USB_F_USB20HDC
+        default y
+        help
+          This turns on dma transfer for F_USB20HDC USB
+          Controller driver in both host mode and device mode
+          If you want to use a DMA transfer, say Y here.
+          If unsure, say 'y'.
+
+endif

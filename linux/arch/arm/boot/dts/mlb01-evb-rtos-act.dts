@@ -1,0 +1,365 @@
+
+/dts-v1/;
+#include "mlb01-evb-rtos.dtsi"
+
+/ {
+	model = "Socionext SC2000A EVB w/ RTOS and NETSEC";
+	chosen {
+		bootargs = "consoleblank=0 loglevel=4 rdinit=/sbin/finit root=/dev/mmcblk0p2 rootwait ro console=ttyUSI0,115200n8 console=/dev/tty1 ";
+		linux,initrd-start = <0x43000000>;
+		linux,initrd-end =   <0x43F00000>;
+	};
+	gic: interrupt-controller@1d000000 {
+		black-list = <0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21    23 24       27    29 30       33 34    36       39    41 42    44    46       49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90    92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 123 124 125 126 127 128 129 130 131 132 133 134 135 136 137 138 139 140     142 143 144 145 146 147 148     150 151 152 153 154 155 156 157 158 159 160 161 162 163 164 165 166 167 168 169 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 191 192 193 194 195 196 197 198 199 200 201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 232 233 234 235 236 237 238 239 240 241 242 243 244 245 246 247 248 249 250 251 252 253 254 255 256 257 258 259 260                         267 268 269 270 271 272         275 276 277 278         281 282 283 284 285 286 287>;
+//		black-list = <0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 123 124 125 126 127 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 143 144 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159 160 161 162 163 164 165 166 167 168 169 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 191 192 193 194 195 196 197 198 199 200 201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 232 233 234 235 236 237 238 239 240 241 242 243 244 245 246 247 248 249 250 251 252 253 254 255 256 257 258 259 260 261 262 263 264 265 266 267 268 269 270 271 272 273 274 275 276 277 278 279 280 281 282 283 284 285 286 287>;
+		exception-list = <268 271>;
+	};
+	trampoline: trampoline@0x4FFFFF00 {
+		compatible = "socionext,smp-trampoline";
+		reg = <SHMEM_TRAMPOLINE_OFFSET_2G SHMEM_TRAMPOLINE_SIZE>;
+	};
+
+	sn_vblk_rtos: snvblk_rtos@0 {
+		status = "disable";
+	};
+	sdhci2: mmc@19130000 {	/* switching RTOS/Linux */
+		status = "okay";
+		no-init;
+	};
+	eth0: ethernet {
+		status = "okay";
+	};
+	fb_gr00: fb@28906000 {
+		status = "okay";
+		num-set-pattern =<1>;
+		pattern-name= "qvga";
+		qvga {
+			dis_size = <320 240>; /* xres and yres */
+			dis_virtual_size = <640 480>;/*xres_virtual and yres_virtual */
+			dis_expand_horizonal = <3 2>;
+			dis_expand_vertical = <4 3>;
+			dis_format = <0>;/*  0: RGBA8, 2: RGBA4 */
+			dis_position = <0 0 >;
+			byte_num_line = <2560>;
+			a_data_byte_num_line = <0>;
+			draw_addrss = <0xA95D4000 0x258000>;
+			draw_buffer_num = <2>; /* Num of drawing buffer is 2 */
+			dis_pan_step = <1 1>;/* Pan step */
+			dis_triger = <1>;/* Set GR's show or not. 1: enable. 0: disable */
+			area00 {
+				positon = <0 0>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+			area01 {
+				positon = <0 120>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+			area02 {
+				positon = <64 0>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+
+			area03 {
+				positon = <64 120>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+			area04 {
+				positon = <128 0>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+			area05 {
+				positon = <128 120>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+			area06 {
+				positon = <192 0>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+			area07 {
+				positon = <192 120>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+			area08 {
+				positon = <256 0>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+			area09 {
+				positon = <256 120>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+		};
+		hvga {
+			dis_size = <320 240>; /* xres and yres */
+			dis_virtual_size = <640 480>;/*xres_virtual and yres_virtual */
+			dis_expand_horizonal = <3 2>;
+			dis_expand_vertical = <4 3>;
+			dis_format = <0>;/*  0: RGBA8, 2: RGBA4 */
+			dis_position = <0 0 >;
+			byte_num_line = <2560>;
+			a_data_byte_num_line = <0>;
+			draw_addrss = <0xA95D4000 0x258000>;
+			draw_buffer_num = <2>; /* Num of drawing buffer is 2 */
+			dis_pan_step = <1 1>;/* Pan step */
+			dis_triger = <1>;/* Set GR's show or not. 1: enable. 0: disable */
+			area00 {
+				positon = <0 0>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+			area01 {
+				positon = <0 120>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+			area02 {
+				positon = <64 0>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+
+			area03 {
+				positon = <64 120>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+			area04 {
+				positon = <128 0>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+			area05 {
+				positon = <128 120>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+			area06 {
+				positon = <192 0>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+			area07 {
+				positon = <192 120>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+			area08 {
+				positon = <256 0>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+			area09 {
+				positon = <256 120>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+		};
+		lcd480-320 {
+			dis_size = <480 320>; /* xres and yres */
+			dis_virtual_size = <640 480>;/*xres_virtual and yres_virtual */
+			dis_expand_horizonal = <1 1>;
+			dis_expand_vertical = <1 1>;
+			dis_format = <0>;/*  0: RGBA8, 2: RGBA4 */
+			dis_position = <0 0 >;
+			byte_num_line = <2560>;
+			a_data_byte_num_line = <0>;
+			draw_addrss = <0xA95D4000 0x258000>;
+			draw_buffer_num = <2>; /* Num of drawing buffer is 2 */
+			dis_pan_step = <1 1>;/* Pan step */
+			dis_triger = <1>;/* Set GR's show or not. 1: enable. 0: disable */
+			area00 {
+				positon = <0 0>;
+				size = <96 160>;
+				show_enable = <1>;
+			};
+			area01 {
+				positon = <0 160>;
+				size = <96 160>;
+				show_enable = <1>;
+			};
+			area02 {
+				positon = <96 0>;
+				size = <96 160>;
+				show_enable = <1>;
+			};
+
+			area03 {
+				positon = <96 160>;
+				size = <96 160>;
+				show_enable = <1>;
+			};
+			area04 {
+				positon = <192 0>;
+				size = <96 160>;
+				show_enable = <1>;
+			};
+			area05 {
+				positon = <192 160>;
+				size = <96 160>;
+				show_enable = <1>;
+			};
+			area06 {
+				positon = <288 0>;
+				size = <96 160>;
+				show_enable = <1>;
+			};
+			area07 {
+				positon = <288 160>;
+				size = <96 160>;
+				show_enable = <1>;
+			};
+			area08 {
+				positon = <384 0>;
+				size = <96 160>;
+				show_enable = <1>;
+			};
+			area09 {
+				positon = <384 160>;
+				size = <96 160>;
+				show_enable = <1>;
+			};
+		};
+		hvga4444 {
+			dis_size = <320 240>; /* xres and yres */
+			dis_virtual_size = <640 480>;/*xres_virtual and yres_virtual */
+			dis_expand_horizonal = <3 2>;
+			dis_expand_vertical = <4 3>;
+			dis_format = <2>;/*  0: RGBA8, 2: RGBA4 */
+			dis_position = <0 0 >;
+			byte_num_line = <1280>;
+			a_data_byte_num_line = <0>;
+			draw_addrss = <0xA95D4000 0x258000>;
+			draw_buffer_num = <2>; /* Num of drawing buffer is 2 */
+			dis_pan_step = <1 1>;/* Pan step */
+			dis_triger = <1>;/* Set GR's show or not. 1: enable. 0: disable */
+			area00 {
+				positon = <0 0>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+			area01 {
+				positon = <0 120>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+			area02 {
+				positon = <64 0>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+
+			area03 {
+				positon = <64 120>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+			area04 {
+				positon = <128 0>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+			area05 {
+				positon = <128 120>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+			area06 {
+				positon = <192 0>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+			area07 {
+				positon = <192 120>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+			area08 {
+				positon = <256 0>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+			area09 {
+				positon = <256 120>;
+				size = <64 120>;
+				show_enable = <1>;
+			};
+		};
+		qqvga4444 {
+			dis_size = <320 240>; /* xres and yres */
+			dis_virtual_size = <320 240>;/*xres_virtual and yres_virtual */
+			dis_expand_horizonal = <3 2>;
+			dis_expand_vertical = <4 3>;
+			dis_format = <2>;/*  0: RGBA8, 2: RGBA4 */
+			dis_position = <0 0 >;
+			byte_num_line = <640>;
+			a_data_byte_num_line = <0>;
+			draw_addrss = <0xA95D4000 0x258000>;
+			draw_buffer_num = <3>; /* Num of drawing buffer is 3 */
+			dis_pan_step = <4 4>;/* Pan step */
+			dis_triger = <1>;/* Set GR's show or not. 1: enable. 0: disable */
+			area00 {
+				positon = <0 0>;
+				size = <160 240>;
+				show_enable = <1>;
+			};
+			area01 {
+				positon = <160 0>;
+				size = <160 240>;
+				show_enable = <1>;
+			};
+			area02 {
+				positon = <64 0>;
+				size = <64 120>;
+				show_enable = <0>;
+			};
+
+			area03 {
+				positon = <64 120>;
+				size = <64 120>;
+				show_enable = <0>;
+			};
+			area04 {
+				positon = <128 0>;
+				size = <64 120>;
+				show_enable = <0>;
+			};
+			area05 {
+				positon = <128 120>;
+				size = <64 120>;
+				show_enable = <0>;
+			};
+			area06 {
+				positon = <192 0>;
+				size = <64 120>;
+				show_enable = <0>;
+			};
+			area07 {
+				positon = <192 120>;
+				size = <64 120>;
+				show_enable = <0>;
+			};
+			area08 {
+				positon = <256 0>;
+				size = <64 120>;
+				show_enable = <0>;
+			};
+			area09 {
+				positon = <256 120>;
+				size = <64 120>;
+				show_enable = <0>;
+			};
+		};
+	};
+	fb_gr10: fb@28902000 {
+		status = "okay";
+	};
+};

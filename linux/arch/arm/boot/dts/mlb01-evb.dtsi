@@ -1,0 +1,205 @@
+#include "sc2000.dtsi"
+
+/ {
+	model = "Socionext SC2000A EVB";
+	compatible = "milbeaut,sc2000a", "socionext,milbeaut-evb";
+	interrupt-parent = <&gic>;
+	chosen {
+		bootargs = "consoleblank=0 loglevel=4 rdinit=/sbin/finit root=/dev/mmcblk0p2 rootwait ro console=ttyUSI0,115200n8 console=/dev/tty1 ";
+//		bootargs = "lpj=100000 clk_ignore_unused earlyprintk consoleblank=0 loglevel=8  rdinit=/sbin/finit root=/dev/mmcblk0p2 rootwait rw console=ttyUSI0,115200n8 console=/dev/tty1 ";
+		linux,initrd-start = <0x4A000000>;
+		linux,initrd-end =   <0x4BF00000>;
+	};
+	memory {
+		device_type = "memory";
+		/* Assigned memory is 0x0c000000 and the last 1MB is used for
+		   Hibernation */
+		reg = <0x40000000  0x0BF00000>;
+	};
+
+	mlb01-clk-tree@ { /* see page-125 */
+		clocks {
+			pll1: pll1 {
+				read-only;
+			};
+			pll2: pll2 {
+				read-only;
+			};
+			pll6: pll6 { /* CLK 6-1 */
+				read-only;
+			};
+
+			pll7: pll7 { /* CLK 7-1 */
+				read-only;
+			};
+
+			pll10: pll10 {
+				read-only;
+			};
+
+			pll11: pll11 { /* CLK 11-1 */
+				read-only;
+			};
+
+			emmcclk: emmcclk {
+				read-only;
+			};
+
+			spiclk_mux_0: spiclk_mux_0 {
+				read-only;
+			};
+
+			spiclk_mux_1: spiclk_mux_1 {
+				read-only;
+			};
+
+			spiclk: spiclk {
+				read-only;
+			};
+
+			mclk400: mclk400 {
+				read-only;
+			};
+
+			mclk200: mclk200 {
+				read-only = <1>;
+			};
+
+			aclk400: aclk400 {
+				read-only;
+			};
+
+			aclk300: aclk300 {
+				read-only;
+			};
+
+			aclk: aclk {
+				read-only;
+			};
+
+			aclkexs: aclkexs {
+				read-only;
+			};
+
+			hclk: hclk {
+				read-only;
+			};
+
+			hclkbmh: hclkbmh {
+				read-only;
+			};
+
+			pclk: pclk {
+				read-only;
+			};
+
+			rclk: rclk {
+				read-only;
+			};
+
+			uhs1clk0: uhs1clk0 {
+				read-only;
+			};
+
+			uhs1clk1_div1: uhs1clk1_div1 {
+				read-only;
+			};
+
+			uhs1clk1_div2: uhs1clk1_div2 {
+				read-only;
+			};
+
+			uhs1clk1: uhs1clk1 {
+				read-only;
+			};
+
+			uhs1clk2_div1: uhs1clk2_div1 {
+				read-only;
+			};
+
+			uhs1clk2_div2: uhs1clk2_div2 {
+				read-only;
+			};
+
+			uhs1clk2: uhs1clk2 {
+				read-only;
+			};
+
+			uhs2clk: uhs2clk {
+				read-only;
+			};
+
+			nfclk_div1: nfclk_div1 {
+				read-only;
+			};
+
+			nfclk_div2: nfclk_div2 {
+				read-only;
+			};
+
+			nfclk: nfclk {
+				read-only;
+			};
+
+			clk5: clk5 {
+				read-only;
+			};
+		};
+	};
+
+	snrtos_ipcu00: snrtos0@0 {
+		status = "disabled";
+	};
+
+	snrtos_ipcu10: snrtos1@0 {
+		status = "disabled";
+	};
+
+	gpio-leds {
+		compatible = "gpio-leds";
+
+		/* These leds are controlled by M0, use it only for debug */
+/*		led10 {
+			label = "led10";
+			gpios = <&pinctrl_m0 MLB01_PIN(2,4) GPIO_ACTIVE_HIGH>;
+			linux,default-trigger = "off";
+		};
+		led11 {
+			label = "led11";
+			gpios = <&pinctrl_m0 MLB01_PIN(2,5) GPIO_ACTIVE_HIGH>;
+			linux,default-trigger = "off";
+		};
+		led12 {
+			label = "led12";
+			gpios = <&pinctrl_m0 MLB01_PIN(2,6) GPIO_ACTIVE_HIGH>;
+			linux,default-trigger = "off";
+		};
+		led13 {
+			label = "led13";
+			gpios = <&pinctrl_m0 MLB01_PIN(2,7) GPIO_ACTIVE_HIGH>;
+			linux,default-trigger = "off";
+		};
+*/
+
+		led_dumy1 {
+			label = "led_dumy1";
+			gpios = <&pinctrl MLB01_PIN(F,4) GPIO_ACTIVE_HIGH>;
+			linux,default-trigger = "off";
+		};
+		led_dumy2 {
+			label = "led_dumy2";
+			gpios = <&pinctrl MLB01_PIN(F,3) GPIO_ACTIVE_HIGH>;
+			linux,default-trigger = "off";
+		};
+	};
+
+	gpio_keys {
+		compatible = "gpio-keys";
+		status = "disable";
+		key_dummy {
+			label = "keydummy";
+			gpios = <&pinctrl MLB01_PIN(7,5) GPIO_ACTIVE_HIGH>;
+			linux,code = <KEY_A>;
+		};
+	};
+};

@@ -1,0 +1,32 @@
+* Socionext Framebuffer
+
+Socionext IRIS is a kind of display engine.
+
+Required properties:
+- compatible : Should be "socionext,f-iris-fb"
+- reg : Address and length of the register memory map.
+- interrupts : irq number for this device.
+- id : Identification number.
+- simple : Define to use simple framebuffer or fdb-drm.
+	   <0> for fdb-drm, and nonzero for simple linux framebuffer.
+	   (fdb: Socionext Display Bus)
+- clocks : Refer Documentation/devicetree/bindings/clock/clock-bindings.txt
+- clock-names : Refer Documentation/devicetree/bindings/clock/clock-bindings.txt
+
+Optional properties:
+- h-pixels-fb-offset : Horizontal offset for framebuffer start.
+- mode : Resolution definition.
+
+Example:
+	fb0: iris-dsi@fb0 {
+		compatible = "socionext,f-iris-fb";
+		reg = <0 0x37020000 0x8000>;
+		interrupts = <0 212 0x4>,
+			     <0 227 0x4>;
+		id = <0>;
+		simple = <0>;
+		mode = "768x1280x32bpp";
+		h-pixels-fb-offset = <12>;
+		clocks = <&clk_dphy_1_0>, <&clk_main_1_3>, <&clk_main_3_3>;
+		clock-names = "clk1", "clk2", "clk3";
+	};

@@ -1,0 +1,17 @@
+* I2C
+
+Required Properties :
+
+ - reg : Offset and length of the register set for the device
+ - compatible : "socionext,f_i2c"
+ - interrupts : interrupt the I2C IP is connected to in the SoC
+ - clock-frequency : I2C bus clock frequency in Hz (100000 or 400000)
+
+Example :
+
+	i2c: sn_i2c {
+		compatible = "socionext,sn_i2c";
+		reg = <0xfff73000 0x1000>;
+		interrupts = <0 91 0x4>;
+		clock-frequency = <100000>;
+	};

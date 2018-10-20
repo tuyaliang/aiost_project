@@ -1,0 +1,1115 @@
+
+#include <dt-bindings/interrupt-controller/irq.h>
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/interrupt-controller/arm-gic.h>
+
+#include "skeleton.dtsi"
+
+#include "sc2000-clk.h"
+#include "sc2000-gpios.h"
+
+/ {
+	compatible = "milbeaut,sc2000a";
+	interrupt-parent = <&gic>;
+	aliases {
+		// SPI macro
+		spi0 = &sni_spi0;
+		spi1 = &sni_spi1;
+		spi2 = &sni_spi2;
+		// USIO/SPI macro
+		spi3 = &spi0;
+		spi4 = &spi1;
+		spi5 = &spi2;
+		spi6 = &spi3;
+		spi7 = &spi4;
+		spi8 = &spi5;
+		spi9 = &spi6;
+		spi10 = &spi7;
+	};
+	cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+
+
+	gic: interrupt-controller@1d000000 {
+		compatible = "arm,cortex-a7-gic";
+		interrupt-controller;
+		#interrupt-cells = <3>;
+		reg = <0x1d001000 0x1000>, /* Distributer base and size */
+		      <0x1d002000 0x1000>; /* CPU I/f base and size */
+		black-list = <>;
+	};
+
+	mlb01-clk-tree@ { /* see page-125 */
+		compatible = "socionext,mlb01-clk-regs";
+		reg = <0x1d021000 0x4000>;
+
+		clocks {
+			#address-cells = <0>;
+			#size-cells = <0>;
+
+			uclk40xi: uclk40xi {
+				compatible = "fixed-clock";
+				#clock-cells = <0>;
+				clock-frequency = <40000000>;
+			};
+
+			aumclki: aumclki {
+				compatible = "fixed-clock";
+				#clock-cells = <0>;
+				clock-frequency = <20000000>;
+			};
+
+			rtc32k: rtc32k {
+				compatible = "fixed-clock";
+				#clock-cells = <0>;
+				clock-frequency = <32768>;
+			};
+
+			pxrefclk: pxrefclk {
+				compatible = "fixed-clock";
+				#clock-cells = <0>;
+				clock-frequency = <100000000>;
+			};
+
+			pcisuppclk: pcisuppclk {
+				compatible = "fixed-factor-clock";
+				#clock-cells = <0>;
+				clocks = <&uclk40xi>;
+				clock-div = <20>;
+				clock-mult = <1>;
+			};
+
+			usb2_clk: usb2_clk {
+				compatible = "fixed-factor-clock";
+				#clock-cells = <0>;
+				clocks = <&uclk40xi>;
+				clock-div = <2>;
+				clock-mult = <1>;
+			};
+
+			pll1: pll1 {
+				compatible = "socionext,mlb01-pll-fixed-factor";
+				#clock-cells = <0>;
+				clocks = <&uclk40xi>;
+				offset = <1>;
+				clock-div = <1>;
+				clock-mult = <40>;
+			};
+
+			pll2: pll2 {
+				compatible = "socionext,mlb01-pll-fixed-factor";
+				#clock-cells = <0>;
+				clocks = <&uclk40xi>;
+				offset = <2>;
+				clock-div = <1>;
+				clock-mult = <30>;
+			};
+
+			pll6: pll6 { /* CLK 6-1 */
+				compatible = "socionext,mlb01-pll-fixed-factor";
+				#clock-cells = <0>;
+				clocks = <&uclk40xi>;
+				offset = <7>;
+				clock-div = <1>;
+				clock-mult = <35>;
+			};
+
+			pll7: pll7 { /* CLK 7-1 */
+				compatible = "socionext,mlb01-pll-fixed-factor";
+				#clock-cells = <0>;
+				clocks = <&uclk40xi>;
+				offset = <8>;
+				clock-div = <1>;
+				clock-mult = <40>;
+			};
+
+			pll9: pll9 { /* CA7CLK, ATCLK */
+				compatible = "fixed-factor-clock"; /* for now */
+				#clock-cells = <0>;
+				clocks = <&uclk40xi>;
+				clock-div = <1>;
+				clock-mult = <33>;
+			};
+
+			pll10: pll10 {
+				compatible = "socionext,mlb01-pll-fixed-factor";
+				#clock-cells = <0>;
+				clocks = <&uclk40xi>;
+				offset = <10>;
+				clock-div = <5>;
+				clock-mult = <108>;
+			};
+
+			pll11: pll11 { /* CLK 11-1 */
+				compatible = "socionext,mlb01-pll-fixed-factor";
+				#clock-cells = <0>;
+				clocks = <&uclk40xi>;
+				offset = <12>;
+				clock-div = <2>;
+				clock-mult = <75>;
+			};
+
+			emmcclk: emmcclk {
+				compatible = "socionext,mlb01-clk-div";
+				#clock-cells = <0>;
+				clocks = <&pll11>;
+				offset = <bEMMCCLK>;
+				mask = <0x3>;
+				ratios = <15 0x7 10 0x6 9 0x5 8 0x4>;
+			};
+
+			pll1_div_1_2: pll1_div_1_2 { /* CLK 1-2 */
+				compatible = "fixed-factor-clock";
+				#clock-cells = <0>;
+				clocks = <&pll1>;
+				clock-div = <2>;
+				clock-mult = <1>;
+			};
+
+			pll2_div_1_2: pll2_div_1_2 { /* CLK 2-2 */
+				compatible = "fixed-factor-clock";
+				#clock-cells = <0>;
+				clocks = <&pll2>;
+				clock-div = <2>;
+				clock-mult = <1>;
+			};
+
+			pll6_div_1_2: pll6_div_1_2 { /* CLK 6-2 */
+				compatible = "fixed-factor-clock";
+				#clock-cells = <0>;
+				clocks = <&pll6>;
+				clock-div = <2>;
+				clock-mult = <1>;
+			};
+
+			pll6_div_1_3: pll6_div_1_3 { /* CLK 6-3 */
+				compatible = "fixed-factor-clock";
+				#clock-cells = <0>;
+				clocks = <&pll6>;
+				clock-div = <3>;
+				clock-mult = <1>;
+			};
+
+			pll7_div_1_2: pll7_div_1_2 { /* CLK 7-2 */
+				compatible = "fixed-factor-clock";
+				#clock-cells = <0>;
+				clocks = <&pll7>;
+				clock-div = <2>;
+				clock-mult = <1>;
+			};
+
+			pll7_div_1_5: pll7_div_1_5 { /* CLK 7-5 */
+				compatible = "fixed-factor-clock";
+				#clock-cells = <0>;
+				clocks = <&pll7>;
+				clock-div = <5>;
+				clock-mult = <1>;
+			};
+
+			pll10_div_1_2: pll10_div_1_2 { /* CLK 10-2 */
+				compatible = "fixed-factor-clock";
+				#clock-cells = <0>;
+				clocks = <&pll10>;
+				clock-div = <2>;
+				clock-mult = <1>;
+			};
+
+			spiclk_mux_0: spiclk_mux_0 {
+				compatible = "socionext,mlb01-clk-div";
+				#clock-cells = <0>;
+				clocks = <&pll10_div_1_2>;
+				offset = <bSPICLK>;
+				mask = <0x3>;
+				ratios = <4 0x5 2 0x4>;
+			};
+
+			spiclk_mux_1: spiclk_mux_1 {
+				compatible = "socionext,mlb01-clk-div";
+				#clock-cells = <0>;
+				clocks = <&pll7_div_1_2>;
+				offset = <bSPICLK>;
+				mask = <0x3>;
+				ratios = <8 0x6>;
+			};
+
+			spiclk: spiclk {
+				compatible = "socionext,mlb01-clk-mux";
+				#clock-cells = <0>;
+				clocks = <&spiclk_mux_0>, <&spiclk_mux_1>;
+			};
+
+			ca7wdclk: ca7wdclk {
+				compatible = "fixed-factor-clock";
+				#clock-cells = <0>;
+				clocks = <&pll2_div_1_2>;
+				clock-div = <12>;
+				clock-mult = <1>;
+			};
+
+			pll9_div_1_2: pll9_div_1_2 {
+				compatible = "fixed-factor-clock"; /* for now */
+				#clock-cells = <0>;
+				clocks = <&pll9>;
+				clock-div = <2>;
+				clock-mult = <1>;
+			};
+
+			mclk400: mclk400 {
+				compatible = "socionext,mlb01-clk-div";
+				#clock-cells = <0>;
+				clocks = <&pll1_div_1_2>;
+				offset = <bMCLK400>;
+				mask = <0x3>;
+				ratios = <4 0x7 2 0x5>;
+			};
+
+			mclk200: mclk200 {
+				compatible = "socionext,mlb01-clk-div";
+				#clock-cells = <0>;
+				clocks = <&pll1_div_1_2>;
+				offset = <bMCLK200>;
+				mask = <0x7>;
+				ratios = <8 0xf 4 0xb>;
+			};
+
+			aclk400: aclk400 {
+				compatible = "socionext,mlb01-clk-div";
+				#clock-cells = <0>;
+				clocks = <&pll1_div_1_2>;
+				offset = <bACLK400>;
+				mask = <0x3>;
+				ratios = <4 0x7 2 0x5>;
+			};
+
+			aclk300: aclk300 {
+				compatible = "socionext,mlb01-clk-div";
+				#clock-cells = <0>;
+				clocks = <&pll2_div_1_2>;
+				offset = <bACLK300>;
+				mask = <0x1>;
+				ratios = <6 0x3 4 0x2>;
+			};
+
+			aclk: aclk {
+				compatible = "socionext,mlb01-clk-div";
+				#clock-cells = <0>;
+				clocks = <&pll1_div_1_2>;
+				offset = <bACLK>;
+				mask = <0x7>;
+				ratios = <8 0xf 4 0xb>;
+			};
+
+			aclkexs: aclkexs {
+				compatible = "socionext,mlb01-clk-div";
+				#clock-cells = <0>;
+				clocks = <&pll1_div_1_2>;
+				offset = <bACLKEXS>;
+				mask = <0x7>;
+				ratios = <8 0xf 6 0xd 5 0xc 4 0xb>;
+			};
+
+			hclk: hclk {
+				compatible = "socionext,mlb01-clk-div";
+				#clock-cells = <0>;
+				clocks = <&pll1_div_1_2>;
+				offset = <bHCLK>;
+				mask = <0xf>;
+				ratios = <16 0x1f 8 0x17>;
+			};
+
+			hclkbmh: hclkbmh {
+				compatible = "socionext,mlb01-clk-div";
+				#clock-cells = <0>;
+				clocks = <&pll1_div_1_2>;
+				offset = <bHCLKBMH>;
+				mask = <0x7>;
+				ratios = <8 0xf 4 0xb>;
+			};
+
+			pclk: pclk {
+				compatible = "socionext,mlb01-clk-div";
+				#clock-cells = <0>;
+				clocks = <&pll1_div_1_2>;
+				offset = <bPCLK>;
+				mask = <0x3f>;
+				ratios = <32 0x5f 16 0x4f>;
+			};
+
+			pclkca7wd: pclkca7wd {
+				compatible = "fixed-factor-clock";
+				#clock-cells = <0>;
+				clocks = <&pll1_div_1_2>;
+				clock-div = <16>;
+				clock-mult = <1>;
+			};
+
+			rclk: rclk {
+				compatible = "socionext,mlb01-clk-div";
+				#clock-cells = <0>;
+				clocks = <&pll10_div_1_2>;
+				offset = <bRCLK>;
+				mask = <0x3>;
+				ratios = <32 0x7 24 0x6 16 0x5 8 0x4>;
+			};
+
+			uhs1clk0: uhs1clk0 {
+				compatible = "socionext,mlb01-clk-div";
+				#clock-cells = <0>;
+				clocks = <&pll7>;
+				offset = <bUHS1CLK0>;
+				mask = <0xf>;
+				ratios = <16 0x14 8 0x13 4 0x12 3 0x11 2 0x10>;
+			};
+
+			uhs1clk1_div1: uhs1clk1_div1 {
+				compatible = "socionext,mlb01-clk-div";
+				#clock-cells = <0>;
+				clocks = <&pll7>;
+				offset = <bUHS1CLK1>;
+				mask = <0xf>;
+				ratios = <16 0x14 8 0x13>;
+			};
+
+			uhs1clk1_div2: uhs1clk1_div2 {
+				compatible = "socionext,mlb01-clk-div";
+				#clock-cells = <0>;
+				clocks = <&pll6_div_1_2>;
+				offset = <bUHS1CLK1>;
+				mask = <0xf>;
+				ratios = <1 0x18>;
+			};
+
+			uhs1clk1: uhs1clk1 {
+				compatible = "socionext,mlb01-clk-mux";
+				#clock-cells = <0>;
+				clocks = <&uhs1clk1_div1>, <&uhs1clk1_div2>;
+			};
+
+			uhs1clk2_div1: uhs1clk2_div1 {
+				compatible = "socionext,mlb01-clk-div";
+				#clock-cells = <0>;
+				clocks = <&pll7>;
+				offset = <bUHS1CLK2>;
+				mask = <0xf>;
+				ratios = <16 0x14 8 0x13 4 0x12>;
+			};
+
+			uhs1clk2_div2: uhs1clk2_div2 {
+				compatible = "socionext,mlb01-clk-div";
+				#clock-cells = <0>;
+				clocks = <&pll6_div_1_2>;
+				offset = <bUHS1CLK2>;
+				mask = <0xf>;
+				ratios = <1 0x18>;
+			};
+
+			uhs1clk2: uhs1clk2 {
+				compatible = "socionext,mlb01-clk-mux";
+				#clock-cells = <0>;
+				clocks = <&uhs1clk2_div1>, <&uhs1clk2_div2>;
+			};
+
+			uhs2clk: uhs2clk {
+				compatible = "socionext,mlb01-clk-div";
+				#clock-cells = <0>;
+				clocks = <&pll6_div_1_3>;
+				offset = <bUHS2CLK>;
+				mask = <0x7>;
+				ratios = <18 0xf 16 0xe 14 0xd 13 0xc 12 0xb 11 0xa 10 0x9 9 0x8>;
+			};
+
+			nfclk_div1: nfclk_div1 {
+				compatible = "socionext,mlb01-clk-div";
+				#clock-cells = <0>;
+				clocks = <&pll7_div_1_2>;
+				offset = <bNFCLK>;
+				mask = <0x1f>;
+				ratios = <40 0x24 16 0x23 13 0x22 10 0x21 8 0x20>;
+			};
+
+			nfclk_div2: nfclk_div2 {
+				compatible = "socionext,mlb01-clk-div";
+				#clock-cells = <0>;
+				clocks = <&pll7_div_1_5>;
+				offset = <bNFCLK>;
+				mask = <0x1f>;
+				ratios = <10 0x28>;
+			};
+
+			nfclk: nfclk {
+				compatible = "socionext,mlb01-clk-mux";
+				#clock-cells = <0>;
+				clocks = <&nfclk_div1>, <&nfclk_div2>;
+			};
+
+			clk5: clk5 {
+				compatible = "socionext,mlb01-clk-div";
+				#clock-cells = <0>;
+				clocks = <&pll10_div_1_2>;
+				offset = <bNETAUSEL>;
+				mask = <0x3>;
+				ratios = <64 0x7 48 0x6 32 0x5 16 0x4>;
+			};
+		};
+	};
+
+	peri-timer@1e000000 { /* 32-bit Reload Timers */
+		compatible = "socionext,milbeaut-timer";
+		reg = <0x1e000050 0x10>, <0x1e000060 0x10>;
+		interrupts = <0 91 4>;
+		clocks = <&rclk>;
+	};
+
+	timer { /* The Generic Timer */
+		compatible = "arm,armv7-timer";
+        interrupts = <GIC_PPI 13
+					 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>,
+                     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>,
+                     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>,
+                     <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
+		clock-frequency = <40000000>;//40M
+		always-on;
+		arm,cpu-registers-not-fw-configured;
+	};
+
+	pmu {
+		status = "disabled";
+		compatible = "arm,cortex-a7-pmu";
+		interrupts = <0 12 4>,
+			     <0 13 4>,
+			     <0 14 4>,
+			     <0 15 4>;
+	};
+
+	dummy_clk: dummy_clk { /* just for testing */
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <50000000>;
+	};
+
+	reset: resetcon@1b110000 {
+		compatible = "socionext,milbeaut-reset";
+		reg = <0x1b110000 0x280>;
+		#reset-cells = <1>;
+	};
+
+/* Here is M0's care. Use it at debug only
+*/
+	pinctrl_m0: pinctrl@1dffb000 {
+		compatible = "socionext,mlb01-cm0-pinctrl";
+		reg = <0x1dffb000 0x1000>;
+		reg-names = "pinctrl";
+		gpio-controller;
+		#gpio-cells = <2>;
+		interrupt-controller;
+		#interrupt-cells = <2>;
+		clocks = <&dummy_clk>;
+	};
+
+	pinctrl: pinctrl@1d022000 {
+		compatible = "socionext,mlb01-pinctrl";
+		reg = <0x1d022000 0x1000>,
+		      <0x1c26f000 0x1000>;
+		reg-names = "pinctrl", "exiu";
+		gpio-controller;
+		#gpio-cells = <2>;
+		interrupt-controller;
+		#interrupt-cells = <2>;
+		clocks = <&dummy_clk>;
+		interrupts = <0 54 4>, <0 55 4>, <0 56 4>, <0 57 4>,
+				<0 58 4>, <0 59 4>, <0 60 4>, <0 61 4>,
+				<0 62 4>, <0 63 4>, <0 64 4>, <0 65 4>,
+				<0 66 4>, <0 67 4>, <0 68 4>, <0 69 4>;
+		interrupt-names = "pin-48", "pin-49", "pin-50", "pin-51",
+				"pin-52", "pin-53", "pin-54", "pin-55",
+				"pin-56", "pin-57", "pin-58", "pin-59",
+				"pin-60", "pin-61", "pin-62", "pin-63";
+
+		usio1_pins: usio1_pins {
+			pins = "PE4", "PE5", "P87";
+			function = "usio1";
+		};
+	};
+
+	input0: input{
+		compatible = "socionext,mlb01-input";
+	};
+
+	usio0: usio_uart@1e700000 { /* PE2, PE3   */ 
+		status = "disabled";
+		compatible = "socionext,m8m-usio-uart";
+		reg = <0x1e700000 0x10>;
+		interrupts = <0 140 0x4>, <0 148 0x4>;
+		interrupt-names = "rx", "tx";
+		clocks = <&hclk>;
+		flwen = <0>;//Disable flow control. Enable flow control if set it to 1 
+	};
+	
+	usio1: usio_uart@1e700010 { /* PE4, PE5 */	/* USB-CN12 */
+		/* Enable this as ttyUSI0 */
+		index = <0>;
+		compatible = "socionext,m8m-usio-uart";
+		reg = <0x1e700010 0x10>;
+		interrupts = <0 141 0x4>, <0 149 0x4>;
+		interrupt-names = "rx", "tx";
+		clocks = <&hclk>;
+		flwen = <0>;//Disable flow control. Enable flow control if set it to 1 
+	};
+
+	usio2: usio_uart@1e700020 { /* PE0, PE1 */
+		status = "disabled";
+		compatible = "socionext,m8m-usio-uart";
+		reg = <0x1e700020 0x10>;
+		interrupts = <0 142 0x4>, <0 150 0x4>;
+		interrupt-names = "rx", "tx";
+		clocks = <&hclk>;
+	};
+
+	usio3: usio_uart@1e700030 { /* PY1, PY2 */
+		status = "disabled";
+		compatible = "socionext,m8m-usio-uart";
+		reg = <0x1e700030 0x10>;
+		interrupts = <0 143 0x4>, <0 151 0x4>;
+		interrupt-names = "rx", "tx";
+		clocks = <&hclk>;
+	};
+
+	usio4: usio_uart@1e700040 {
+		status = "disabled";
+		compatible = "socionext,m8m-usio-uart";
+		reg = <0x1e700040 0x10>;
+		interrupts = <0 144 0x4>, <0 152 0x4>;
+		interrupt-names = "rx", "tx";
+		clocks = <&hclk>;
+	};
+
+	usio5: usio_uart@1e700050 {
+		status = "disabled";
+		compatible = "socionext,m8m-usio-uart";
+		reg = <0x1e700050 0x10>;
+		interrupts = <0 145 0x4>, <0 153 0x4>;
+		interrupt-names = "rx", "tx";
+		clocks = <&hclk>;
+	};
+
+	usio6: usio_uart@1e700060 {
+		status = "disabled";
+		compatible = "socionext,m8m-usio-uart";
+		reg = <0x1e700060 0x10>;
+		interrupts = <0 146 0x4>, <0 154 0x4>;
+		interrupt-names = "rx", "tx";
+		clocks = <&hclk>;
+	};
+
+	usio7: usio_uart@1e700070 {
+		status = "disabled";
+		compatible = "socionext,m8m-usio-uart";
+		reg = <0x1e700070 0x10>;
+		interrupts = <0 147 0x4>, <0 155 0x4>;
+		interrupt-names = "rx", "tx";
+		clocks = <&hclk>;
+	};
+
+	sdhci1: mmc@1b000000 { /* CH1 UHS-I/WiFi CN6 */
+		compatible = "socionext,mlb01-esdhci-3.0";
+		reg = <0x1b000000 0x10000>;
+		interrupts = <0 273 0x4>;
+		bus-width = <4>;
+		max-frequency = <208000000>;
+		clocks = <&uhs1clk0>, <&dummy_clk>;
+		clock-names = "core", "iface";
+	};
+
+	sdhci2: mmc@19130000 { /* CH2 UHS-I/UHS-II CN4 */
+		compatible = "socionext,mlb01-esdhci-4.0";
+		reg = <0x1b020000 0x10000>, <0x19130200 0x200>,  <0x19130000 0x200>;
+		reg-names = "uhs1", "uhs2", "uhs2_sn" ;
+		interrupts = <0 268 0x4>, <0 271 0x4>;
+		interrupt-names = "uhs1", "uhs2";
+		voltage-ranges = <3300 3300>;
+		bus-width = <4>;
+		clocks = <&uhs2clk>, <&dummy_clk>;
+		clock-names = "core", "iface";
+		cap-sdio-irq;
+		sd40_enable;
+		uhs2-power-limit = <4>; /* 0:0.72W(default) 1:1.44W 2/3:out-of-spec 4:1.80W */
+		sni,mmc-power-gpio = <&pinctrl MLB01_PIN(6,4) GPIO_ACTIVE_HIGH>;
+	};
+
+	sdhci3: mmc@1b010000 { /* CH3 UHS-I CN5 */
+		compatible = "socionext,mlb01-esdhci-3.0";
+		reg = <0x1b010000 0x10000>;
+		interrupts = <0 265 0x4>;
+		voltage-ranges = <3300 3300>;
+		bus-width = <4>;
+		clocks = <&uhs1clk2>, <&dummy_clk>;
+		clock-names = "core", "iface";
+		cap-sdio-irq;
+		sni,mmc-power-gpio = <&pinctrl MLB01_PIN(6,5) GPIO_ACTIVE_HIGH>;
+	};
+
+	emmc: mmc@19120000 {
+		compatible = "socionext,mlb01-emmc-5.0";
+		reg = <0x19120200 0x200>, <0x19120000 0x200>;
+		reg-names = "srs", "hrs";
+		interrupts = <0 276 0x4>;
+		clocks = <&emmcclk>, <&dummy_clk>;
+		clock-names = "core", "iface";
+		max-frequency = <200000000>;
+		bus-width = <8>;
+		non-removable;
+		disable-wp;
+		cap-mmc-highspeed;
+		mmc-ddr-1_8v;
+		mmc-hs200-1_8v;
+		mmc-hs400-1_8v;
+		resets = <&reset 3>;
+	};
+
+	hdmac0: hdmac@1e100000 {
+		status = "disabled";
+		compatible = "socionext,mb86s7x_hdmac";
+		reg = <0x1e100000 0x10000>;
+		interrupts = <0 124 4>,
+			     <0 125 4>,
+			     <0 126 4>,
+			     <0 127 4>,
+			     <0 128 4>,
+			     <0 129 4>,
+			     <0 130 4>,
+			     <0 131 4>;
+		#dma-cells = <1>;
+		priority-rotate;
+		clocks = <&dummy_clk>;
+	};
+
+	hdmac1: hdmac@1e110000 {
+		status = "disabled";
+		compatible = "socionext,mb86s7x_hdmac";
+		reg = <0x1e110000 0x10000>;
+		interrupts = <0 132 4>,
+			     <0 133 4>,
+			     <0 134 4>,
+			     <0 135 4>,
+			     <0 136 4>,
+			     <0 137 4>,
+			     <0 138 4>,
+			     <0 139 4>;
+		#dma-cells = <1>;
+		priority-rotate;
+		clocks = <&dummy_clk>;
+	};
+
+	snrtos_ipcu00: snrtos0@0 {
+		compatible = "socionext,ipcu-device";
+		reg = <0x1c251000 0x1000>, <0x4fe90000 0x32>;
+	};
+
+	snrtos_ipcu10: snrtos1@0 {
+		compatible = "socionext,ipcu-device";
+		reg = <0x1c252000 0x1000>, <0x4fe90020 0x32>;
+	};
+
+	sni_spi0: sni_spi@1e800000 {
+		status = "disabled";
+		compatible = "socionext,sni-spi";
+		clocks = <&spiclk>;
+		#interrupt-cells = <2>;
+		interrupts = <0 156 4>;
+		reg = <0x1e800000 0x100>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		/* dmas = <&hdmac2 1>, <&hdmac2 0>; */
+		dma-names = "tx", "rx";
+	};
+
+	sni_spi1: sni_spi@1e800100 {
+		status = "disabled";
+		compatible = "socionext,sni-spi";
+		clocks = <&spiclk>;
+		#interrupt-cells = <2>;
+		interrupts = <0 157 4>;
+		reg = <0x1e800100 0x100>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		/* dmas = <&hdmac2 1>, <&hdmac2 0>; */
+		dma-names = "tx", "rx";
+	};
+
+	sni_spi2: sni_spi@1e800200 {
+		status = "disabled";
+		compatible = "socionext,sni-spi";
+		clocks = <&spiclk>;
+		#interrupt-cells = <2>;
+		interrupts = <0 158 4>;
+		reg = <0x1e800200 0x100>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		/* dmas = <&hdmac2 1>, <&hdmac2 0>; */
+		dma-names = "tx", "rx";
+	};
+
+	pwm0: pwm@1e120000 {
+		status = "disabled";
+		compatible = "socionext,mlb01-pwm";
+		reg = <0x1e001000 0x400>, <0x1e120000 0x10000>;
+		interrupts = <0 110 4>, <0 114 4>;
+		clocks = <&rclk>;
+		/* all the pwm units share the same clock */
+		base-rate = <13500000>; /* ask for this input rate */
+		#pwm-cells = <3>;
+	};
+	pwm1: pwm@1e130000 {
+		status = "disabled";
+		compatible = "socionext,mlb01-pwm";
+		reg = <0x1e001400 0x400>, <0x1e130000 0x10000>;
+		interrupts = <0 111 4>, <0 115 4>;
+		clocks = <&rclk>;
+		#pwm-cells = <3>;
+	};
+	pwm2: pwm@1e140000 {
+		status = "disabled";
+		compatible = "socionext,mlb01-pwm";
+		reg = <0x1e001800 0x400>, <0x1e140000 0x10000>;
+		interrupts = <0 112 4>, <0 116 4>;
+		clocks = <&rclk>;
+		#pwm-cells = <3>;
+	};
+	pwm3: pwm@1e150000 {
+		status = "disabled";
+		compatible = "socionext,mlb01-pwm";
+		reg = <0x1e001c00 0x400>, <0x1e150000 0x10000>;
+		interrupts = <0 113 4>, <0 117 4>;
+		clocks = <&rclk>;
+		#pwm-cells = <3>;
+	};
+	nand: nand@19100000 {
+		status = "disabled";
+	        #address-cells = <1>;
+	        #size-cells = <1>;
+		compatible = "cdns,hpnfc-dt";
+	        reg = <0x19100000 0x10000>, <0x19110000 10000>, <0x1b110328 0x04>, <0x18000000 0x80000>;
+	        interrupts = <0 242 4>;
+	        dma-mask = <0xffffffff>;
+		ecc-sec-size = <1024>;
+		ecc-corr-cap = <16>;
+		clocks = <&nfclk>;
+
+		resets = <&reset 4>;
+	};
+
+	eth0: ethernet {
+		status = "disabled";
+		compatible = "socionext,ogma";
+		reg = <0x1b100000 0x10000>;
+		interrupts = <0 279 4>, <0 280 4>;
+		phy-mode = "rgmii";
+		max-speed = <1000>;
+		max-frame-size = <9000>;
+		local-mac-address = [ a4 17 31 88 00 ed ];
+		phy-handle = <&ethphy0>;
+		resets = <&reset 2>;
+
+		clocks = <&clk5>;
+
+		#address-cells = <1>;
+		#size-cells = <0>;	
+
+		ethphy0: ethernet-phy@1 {
+			device_type = "ethernet-phy";
+			compatible = "ethernet-phy-ieee802.3-c22";
+			reg = <1>;
+		};
+	};
+
+	/* This is USB3.0 device or host(xhci) selectable entry */
+	usb30: usb30@19c00000 {
+		compatible = "socionext,usb3mlb01,f_usb30dr_fp";
+		reg = <0x1b110280 0x24>;
+		reg-names = "reg-glue";
+		#address-cells	= <1>;
+		#size-cells	= <1>;
+		ranges;
+		dwc3: dwc3@19c00000 {
+			compatible = "snps,dwc3";
+			reg = <0x19c00000 0x100000>;
+			interrupts = <0 264 0x4>;
+			snps,has-lpm-erratum = <1>;
+			dr_mode = "peripheral";	/* or host */
+		};
+	};
+
+	/* For USB2.0/1.1 host and device mode */
+	usb_ehci: usb@1b070000 {
+		compatible = "generic-ehci";
+		reg = <0x1b070000 0x100>;
+		interrupts = <0 262 4>;
+		resets = <&reset 0>;
+	};
+
+	usb_ohci: usb@1b080000 {
+		status = "disabled";
+		compatible = "generic-ohci";
+		reg = <0x1b080000 0x100>;
+		interrupts = <0 263 4>;
+	};
+
+	usb20dev: usb20dev@0x1b050000 {
+		compatible = "socionext,usb2m9m,f_usb20dc_lfp";
+		reg = <0x1b050000 0x10000>, <0x1b040000 0x1000>, <0x1B110200 0x48>;
+		reg-names = "udc", "dma", "glue";
+		interrupts = <0 261 0x4>;
+		dma_dreq = <0x0e000000 0x0e000000>;
+		hdmac_channel = <0 1>;
+		clocks = <&dummy_clk>, <&dummy_clk>, <&dummy_clk>, <&dummy_clk>;
+		clock-names = "dummy_clk", "dummy_clk", "dummy_clk";
+		resets = <&reset 1>;
+	};
+	
+
+	pcie0: pcie@19150000 {
+		status = "disabled";
+		compatible = "socionext,mlb01-pcie";
+		reg = <0x19150000 0x10000>, <0x197F0000 0x10000>, <0x1B111000 0x1000>;
+		reg-names = "ctrlreg", "config", "exsreg";
+		#address-cells = <3>;
+		#size-cells = <2>;
+		device_type = "pci";
+		ranges = <0x81000000 0x00000000 0x00000000 0x197E0000 0x00000000 0x00010000
+			  0x82000000 0x00000000 0x19400000 0x19400000 0x00000000 0x003E0000>;
+		num-lanes = <2>;
+		#interrupt-cells = <1>;
+		interrupts = <0 243 4>, <0 245 4>;
+	};
+	spi0: usio_spi@1e700000 {
+		status = "disabled";
+		compatible = "socionext,m8m-usio-spi";
+		clocks = <&hclk>;
+		clock-names = "spiclk";
+		reg = <0x1e700000 0x10>;
+		interrupts = <0 140 0x4>, <0 148 0x4>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		dmas = <&hdmac1 1>, <&hdmac1 0>;
+		dma-names = "tx", "rx";
+	};
+	spi1: usio_spi@0x1e700010 {
+		status = "disabled";
+		compatible = "socionext,m8m-usio-spi";
+		clocks = <&hclk>;
+		clock-names = "spiclk";
+		reg = <0x1e700010 0x10>;
+		interrupts = <0 141 0x4>, <0 149 0x4>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		dmas = <&hdmac1 3>, <&hdmac1 2>;
+		dma-names = "tx", "rx";
+	};
+	spi2: usio_spi@0x1e700020 {
+		status = "disabled";
+		compatible = "socionext,m8m-usio-spi";
+		clocks = <&hclk>;
+		clock-names = "spiclk";
+		reg = <0x1e700020 0x10>;
+		interrupts = <0 142 0x4>, <0 150 0x4>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		dmas = <&hdmac1 5>, <&hdmac1 4>;
+		dma-names = "tx", "rx";
+	};
+	spi3: usio_spi@0x1e700030 {
+		status = "disabled";
+		compatible = "socionext,m8m-usio-spi";
+		clocks = <&hclk>;
+		clock-names = "spiclk";
+		reg = <0x1e700030 0x10>;
+		interrupts = <0 143 0x4>, <0 151 0x4>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		dmas = <&hdmac1 7>, <&hdmac1 6>;
+		dma-names = "tx", "rx";
+	};
+	spi4: usio_spi@0x1e700040 {
+		status = "disabled";
+		compatible = "socionext,m8m-usio-spi";
+		clocks = <&hclk>;
+		clock-names = "spiclk";
+		reg = <0x1e700040 0x10>;
+		interrupts = <0 144 0x4>, <0 152 0x4>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		dmas = <&hdmac1 9>, <&hdmac1 8>;
+		dma-names = "tx", "rx";
+	};
+	spi5: usio_spi@0x1e700050 {
+		status = "disabled";
+		compatible = "socionext,m8m-usio-spi";
+		clocks = <&hclk>;
+		clock-names = "spiclk";
+		reg = <0x1e700050 0x10>;
+		interrupts = <0 145 0x4>, <0 153 0x4>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		dmas = <&hdmac1 11>, <&hdmac1 10>;
+		dma-names = "tx", "rx";
+	};
+	spi6: usio_spi@0x1e700060 {
+		status = "disabled";
+		compatible = "socionext,m8m-usio-spi";
+		clocks = <&hclk>;
+		clock-names = "spiclk";
+		reg = <0x1e700060 0x10>;
+		interrupts = <0 146 0x4>, <0 154 0x4>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		dmas = <&hdmac1 12>, <&hdmac1 11>;
+		dma-names = "tx", "rx";
+	};
+	spi7: usio_spi@0x1e700070 {
+		status = "disabled";
+		compatible = "socionext,m8m-usio-spi";
+		clocks = <&hclk>;
+		clock-names = "spiclk";
+		reg = <0x1e700070 0x10>;
+		interrupts = <0 147 0x4>, <0 155 0x4>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		dmas = <&hdmac1 14>, <&hdmac1 13>;
+		dma-names = "tx", "rx";
+	};
+
+
+	i2c0: i2c@1e003000 {
+		compatible = "socionext,sni-sc2000a-i2c";
+		reg = <0x1e003000 0x400>;
+		interrupts = <0 101 4>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		clocks = <&pclk>;
+	};
+
+	i2c1: i2c@1e003400 {
+		compatible = "socionext,sni-sc2000a-i2c";
+		reg = <0x1e003400 0x400>;
+		interrupts = <0 102 4>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		clocks = <&pclk>;
+	};
+
+	i2c2: i2c@1e003800 {
+		compatible = "socionext,sni-sc2000a-i2c";
+		reg = <0x1e003800 0x400>;
+		interrupts = <0 103 4>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		clocks = <&pclk>;
+	};
+
+	fb_gr00: fb@28906000 {
+		status = "disabled";
+		compatible = "socionext,sni-gr";
+		index =<0>;
+		reg = <0x28906000 0x1000> ,<0x28905000 0x1000>;
+		reg-names = "gr", "dcore";
+		num-set-pattern =<1>;
+		pattern-name="qqvga";
+		block_no=<1>;/* Common block No.*/
+		device-name = "lcd-gr0";/* The words must be less than 15 */
+		qqvga {
+			dis_size = <320 240>; /* xres and yres */
+			dis_virtual_size = <320 240>;/*xres_virtual and yres_virtual */
+			dis_expand_horizonal = <3 2>;
+			dis_expand_vertical = <4 3>;
+			dis_format = <0>;/*  0: RGBA8, 2: RGBA4 */
+			dis_position = <0 0 >;
+			byte_num_line = <1280>;
+			a_data_byte_num_line = <0>;
+			draw_addrss = <0xA93D4000 0x384000>;
+			draw_buffer_num = <3>; /* Num of drawing buffer is 3 */
+			dis_pan_step = <1 1>;/* Pan step */
+			dis_triger = <1>;/* Set GR's show or not. 1: enable. 0: disable */
+			area00 {
+				positon = <0 0>;
+				size = <320 240>;
+				show_enable = <1>;
+			};
+			area01 {
+				positon = <0 120>;
+				size = <64 120>;
+				show_enable = <0>;
+			};
+			area02 {
+				positon = <64 0>;
+				size = <64 120>;
+				show_enable = <0>;
+			};
+
+			area03 {
+				positon = <64 120>;
+				size = <64 120>;
+				show_enable = <0>;
+			};
+			area04 {
+				positon = <128 0>;
+				size = <64 120>;
+				show_enable = <0>;
+			};
+			area05 {
+				positon = <128 120>;
+				size = <64 120>;
+				show_enable = <0>;
+			};
+			area06 {
+				positon = <192 0>;
+				size = <64 120>;
+				show_enable = <0>;
+			};
+			area07 {
+				positon = <192 120>;
+				size = <64 120>;
+				show_enable = <0>;
+			};
+			area08 {
+				positon = <256 0>;
+				size = <64 120>;
+				show_enable = <0>;
+			};
+			area09 {
+				positon = <256 120>;
+				size = <64 120>;
+				show_enable = <0>;
+			};
+		};
+	};
+	fb_gr01: fb@28907000 {
+		status = "disabled";
+		compatible = "socionext,sni-gr";
+		index =<1>;
+		reg = <0x28907000 0x1000> ,<0x28905000 0x1000>;
+		reg-names = "gr", "dcore";
+		block_no=<1>;// Common block No.
+		device-name = "lcd-gr1";/* The words must be less than 15 */
+	};
+	fb_gr10: fb@28902000 {
+		status = "disabled";
+		compatible = "socionext,sni-gr";
+		reg = <0x28902000 0x1000>, <0x28901000 0x1000>;
+		index =<2>;
+		reg-names = "gr", "dcore";
+		block_no=<0>;// Common block No.
+		device-name = "hdmi-gr0";/* The words must be less than 15 */
+	};
+	fb_gr11: fb@28903000 {
+		status = "disabled";
+		compatible = "socionext,sni-gr";
+		reg = <0x28903000 0x1000>, <0x28901000 0x1000>;
+		index =<3>;
+		reg-names = "gr", "dcore";
+		block_no=<0>;// Common block No.
+		device-name = "hdmi-gr1";/* The words must be less than 15 */
+	};
+};

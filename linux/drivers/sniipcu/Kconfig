@@ -1,0 +1,6 @@
+menuconfig SNI_IPCU
+	bool "SNI IPCU Hardware Support"
+	help
+	  Socionext Inter-Processor Communication Unit driver with 16 cpu i/fs
+	  and 8 mailboxes that can send message to any combination of the
+	  16 cpu i/fs.

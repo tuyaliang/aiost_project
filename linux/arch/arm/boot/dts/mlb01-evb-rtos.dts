@@ -1,0 +1,16 @@
+
+/dts-v1/;
+#include "mlb01-evb-rtos.dtsi"
+
+/ {
+	model = "Socionext SC2000A EVB w/ RTOS SDK";
+	chosen {
+		bootargs = "consoleblank=0 loglevel=4 rdinit=/sbin/finit root=/dev/mmcblk0p2 rootwait ro console=ttyUSI0,115200n8 console=/dev/tty1 ";
+		linux,initrd-start = <0x43000000>;
+		linux,initrd-end =   <0x43F00000>;
+	};
+
+	sn_vblk_rtos: snvblk_rtos@0 {
+		status = "disable";
+	};
+};
